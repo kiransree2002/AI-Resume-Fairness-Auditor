@@ -1,0 +1,148 @@
+[
+  {
+    "candidate_id": "RES_16852973",
+    "name": "Divya (ID:16852973)",
+    "category": "HR",
+    "education": {
+      "detected_degrees": [
+        "Diploma"
+      ],
+      "domain": "HR"
+    },
+    "experience": {
+      "total_years": 15.0
+    },
+    "skills": {
+      "technical": [
+        "Data Analysis",
+        "Statistics",
+        "Swift"
+      ],
+      "soft": [
+        "Leadership",
+        "Time Management"
+      ]
+    },
+    "demographics": {
+      "synthetic_name": "Divya (ID:16852973)",
+      "gender": "Female",
+      "age_group": "27-32",
+      "university_tier": "Tier 3"
+    }
+  },
+  {
+    "candidate_id": "RES_22323967",
+    "name": "Ritu (ID:22323967)",
+    "category": "HR",
+    "education": {
+      "detected_degrees": [
+        "Bachelor's",
+        "Master's"
+      ],
+      "domain": "HR"
+    },
+    "experience": {
+      "total_years": 0.0
+    },
+    "skills": {
+      "technical": [],
+      "soft": [
+        "Communication",
+        "Project Management"
+      ]
+    },
+    "demographics": {
+      "synthetic_name": "Ritu (ID:22323967)",
+      "gender": "Female",
+      "age_group": "41-50",
+      "university_tier": "Tier 2"
+    }
+  },
+  {
+    "candidate_id": "RES_33176873",
+    "name": "Divya (ID:33176873)",
+    "category": "HR",
+    "education": {
+      "detected_degrees": [
+        "Bachelor's",
+        "Master's"
+      ],
+      "domain": "HR"
+    },
+    "experience": {
+      "total_years": 20.0
+    },
+    "skills": {
+      "technical": [
+        "Excel"
+      ],
+      "soft": [
+        "Leadership",
+        "Project Management"
+      ]
+    },
+    "demographics": {
+      "synthetic_name": "Divya (ID:33176873)",
+      "gender": "Female",
+      "age_group": "27-32",
+      "university_tier": "Tier 3"
+    }
+  },
+  {
+    "candidate_id": "RES_27018550",
+    "name": "Rahul (ID:27018550)",
+    "category": "HR",
+    "education": {
+      "detected_degrees": [],
+      "domain": "HR"
+    },
+    "experience": {
+      "total_years": 20.0
+    },
+    "skills": {
+      "technical": [
+        "Excel"
+      ],
+      "soft": [
+        "Communication"
+      ]
+    },
+    "demographics": {
+      "synthetic_name": "Rahul (ID:27018550)",
+      "gender": "Male",
+      "age_group": "33-40",
+      "university_tier": "Tier 2"
+    }
+  },
+  {
+    "candidate_id": "RES_17812897",
+    "name": "Ritu (ID:17812897)",
+    "category": "HR",
+    "education": {
+      "detected_degrees": [
+        "Bachelor's",
+        "Master's"
+      ],
+      "domain": "HR"
+    },
+    "experience": {
+      "total_years": 0.0
+    },
+    "skills": {
+      "technical": [
+        "Excel"
+      ],
+      "soft": [
+        "Leadership",
+        "Problem Solving",
+        "Project Management"
+      ]
+    },
+    "demographics": {
+      "synthetic_name": "Ritu (ID:17812897)",
+      "gender": "Female",
+      "age_group": "27-32",
+      "university_tier": "Tier 2"
+    }
+  }
+]

@@ -1,0 +1,11 @@
+pandas
+numpy
+spacy
+scikit-learn
+pypdf
+pdfplumber
+beautifulsoup4
+requests
+plotly
+matplotlib
+streamlit

@@ -1,0 +1,45 @@
+# ==========================================
+# DATASETS & LARGE FILES (Exceeds GitHub Limits)
+# ==========================================
+data/
+*.csv
+!output/*.csv
+*.zip
+*.tar.gz
+*.7z
+
+# ==========================================
+# PYTHON CACHE & VIRTUAL ENVS
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# ==========================================
+# TRANSFORMERS & HUGGINGFACE CACHE
+# ==========================================
+.cache/
+huggingface/
+transformers/
+
+# ==========================================
+# IDE & SYSTEM SETTINGS
+# ==========================================
+.vscode/
+.idea/
+.antigravity/
+.DS_Store
+Thumbs.db
+
+# ==========================================
+# LOGS & TEMPORARY FILES
+# ==========================================
+*.log
+*.tmp

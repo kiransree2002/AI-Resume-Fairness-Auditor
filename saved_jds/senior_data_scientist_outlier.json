@@ -1,0 +1,89 @@
+{
+  "metadata": {
+    "job_title": "Senior Data Scientist",
+    "company_name": "Outlier AI",
+    "source_url": "Direct Text / Dataset",
+    "created_at": "2026-10-12 12:05:34"
+  },
+  "gate_configuration": {
+    "gate_order": [
+      "skills",
+      "education",
+      "experience"
+    ],
+    "gate_weights": {
+      "skills": 0.5,
+      "education": 0.25,
+      "experience": 0.25
+    }
+  },
+  "requirements": {
+    "skills": {
+      "must_have": [
+        {
+          "skill": "Machine Learning",
+          "importance": 0.95,
+          "category": "Must-Have",
+          "source": "Explicit clue ('must')"
+        },
+        {
+          "skill": "Python",
+          "importance": 0.95,
+          "category": "Must-Have",
+          "source": "Explicit clue ('must')"
+        },
+        {
+          "skill": "Sql",
+          "importance": 0.95,
+          "category": "Must-Have",
+          "source": "Explicit clue ('must')"
+        }
+      ],
+      "preferred": [
+        {
+          "skill": "Aws",
+          "importance": 0.7,
+          "category": "Preferred",
+          "source": "Explicit clue ('preferred')"
+        },
+        {
+          "skill": "Data Analysis",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Docker",
+          "importance": 0.3,
+          "category": "Nice-to-Have",
+          "source": "Explicit clue ('plus')"
+        },
+        {
+          "skill": "Git",
+          "importance": 0.7,
+          "category": "Preferred",
+          "source": "Explicit clue ('preferred')"
+        },
+        {
+          "skill": "Pytorch",
+          "importance": 0.7,
+          "category": "Preferred",
+          "source": "Explicit clue ('preferred')"
+        }
+      ],
+      "total_skills_detected": 8
+    },
+    "education": {
+      "required_degrees": [
+        "Bachelor's",
+        "Master's"
+      ],
+      "importance": 0.85
+    },
+    "experience": {
+      "min_years": 3.0,
+      "importance": 0.8
+    }
+  },
+  "raw_character_count": 505
+}

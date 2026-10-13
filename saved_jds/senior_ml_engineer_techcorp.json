@@ -1,0 +1,95 @@
+{
+  "metadata": {
+    "job_title": "Custom Role",
+    "company_name": "Company",
+    "source_url": "Direct Text / Dataset",
+    "created_at": "2026-10-12 12:22:25"
+  },
+  "gate_configuration": {
+    "gate_order": [
+      "skills",
+      "education",
+      "experience"
+    ],
+    "gate_weights": {
+      "skills": 0.5,
+      "education": 0.25,
+      "experience": 0.25
+    }
+  },
+  "requirements": {
+    "skills": {
+      "must_have": [
+        {
+          "skill": "Machine Learning",
+          "importance": 0.95,
+          "category": "Must-Have",
+          "source": "Explicit clue ('must')"
+        },
+        {
+          "skill": "Python",
+          "importance": 0.95,
+          "category": "Must-Have",
+          "source": "Explicit clue ('must')"
+        },
+        {
+          "skill": "Pytorch",
+          "importance": 0.95,
+          "category": "Must-Have",
+          "source": "Explicit clue ('must')"
+        }
+      ],
+      "preferred": [
+        {
+          "skill": "Aws",
+          "importance": 0.7,
+          "category": "Preferred",
+          "source": "Explicit clue ('preferred')"
+        },
+        {
+          "skill": "Deep Learning",
+          "importance": 0.65,
+          "category": "Preferred",
+          "source": "Domain Logic (Preferred for Data Science)"
+        },
+        {
+          "skill": "Docker",
+          "importance": 0.7,
+          "category": "Preferred",
+          "source": "Explicit clue ('preferred')"
+        },
+        {
+          "skill": "Git",
+          "importance": 0.7,
+          "category": "Preferred",
+          "source": "Explicit clue ('preferred')"
+        },
+        {
+          "skill": "Kubernetes",
+          "importance": 0.7,
+          "category": "Preferred",
+          "source": "Explicit clue ('preferred')"
+        },
+        {
+          "skill": "Nlp",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        }
+      ],
+      "total_skills_detected": 9
+    },
+    "education": {
+      "required_degrees": [
+        "Bachelor's",
+        "Master's"
+      ],
+      "importance": 0.85
+    },
+    "experience": {
+      "min_years": 4.0,
+      "importance": 0.8
+    }
+  },
+  "raw_character_count": 268
+}

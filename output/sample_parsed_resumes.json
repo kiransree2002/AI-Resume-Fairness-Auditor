@@ -1,0 +1,123 @@
+[
+  {
+    "candidate_id": "RES_16852973",
+    "category": "Hr",
+    "education": {
+      "degrees": [
+        "Diploma"
+      ],
+      "has_higher_education": true
+    },
+    "experience": {
+      "years": 15.0
+    },
+    "skills": {
+      "technical": [
+        "Data Analysis",
+        "Statistics",
+        "Swift"
+      ],
+      "soft": [
+        "Leadership",
+        "Time Management"
+      ],
+      "total_count": 5
+    },
+    "raw_character_count": 5020
+  },
+  {
+    "candidate_id": "RES_22323967",
+    "category": "Hr",
+    "education": {
+      "degrees": [
+        "Bachelor's",
+        "Master's"
+      ],
+      "has_higher_education": true
+    },
+    "experience": {
+      "years": 0.0
+    },
+    "skills": {
+      "technical": [],
+      "soft": [
+        "Communication",
+        "Project Management"
+      ],
+      "total_count": 2
+    },
+    "raw_character_count": 5162
+  },
+  {
+    "candidate_id": "RES_33176873",
+    "category": "Hr",
+    "education": {
+      "degrees": [
+        "Bachelor's",
+        "Master's"
+      ],
+      "has_higher_education": true
+    },
+    "experience": {
+      "years": 20.0
+    },
+    "skills": {
+      "technical": [
+        "Excel"
+      ],
+      "soft": [
+        "Leadership",
+        "Project Management"
+      ],
+      "total_count": 3
+    },
+    "raw_character_count": 7330
+  },
+  {
+    "candidate_id": "RES_27018550",
+    "category": "Hr",
+    "education": {
+      "degrees": [],
+      "has_higher_education": false
+    },
+    "experience": {
+      "years": 0.0
+    },
+    "skills": {
+      "technical": [
+        "Excel"
+      ],
+      "soft": [
+        "Communication"
+      ],
+      "total_count": 2
+    },
+    "raw_character_count": 2650
+  },
+  {
+    "candidate_id": "RES_17812897",
+    "category": "Hr",
+    "education": {
+      "degrees": [
+        "Bachelor's",
+        "Master's"
+      ],
+      "has_higher_education": true
+    },
+    "experience": {
+      "years": 0.0
+    },
+    "skills": {
+      "technical": [
+        "Excel"
+      ],
+      "soft": [
+        "Leadership",
+        "Problem Solving",
+        "Project Management"
+      ],
+      "total_count": 4
+    },
+    "raw_character_count": 8858
+  }
+]

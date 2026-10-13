@@ -1,0 +1,1176 @@
+[
+  {
+    "candidate_id": "RES_18827609",
+    "name": "Neha (ID:18827609)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": true,
+        "reason": "Experience OK: 3.0yrs >= 2.0yrs required"
+      },
+      "gate_3_must_skills": {
+        "status": "PASS",
+        "reason": "No must-have skills specified",
+        "matched": [
+          "Communication",
+          "Leadership"
+        ],
+        "missing": []
+      },
+      "gate_4_preferred_skills": {
+        "bonus_points": 7.0,
+        "matched": [
+          "Communication",
+          "Leadership"
+        ]
+      }
+    },
+    "final_score": 87,
+    "status": "SHORTLISTED",
+    "rejection_reason": null,
+    "matched_skills": [
+      "Communication",
+      "Leadership"
+    ],
+    "missing_skills": [],
+    "tfidf_score": 9.67,
+    "combined_score": 63.8
+  },
+  {
+    "candidate_id": "RES_13879043",
+    "name": "Divya (ID:13879043)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": true,
+        "reason": "Experience OK: 7.0yrs >= 2.0yrs required"
+      },
+      "gate_3_must_skills": {
+        "status": "PASS",
+        "reason": "No must-have skills specified",
+        "matched": [
+          "Data Analysis",
+          "Leadership"
+        ],
+        "missing": []
+      },
+      "gate_4_preferred_skills": {
+        "bonus_points": 7.0,
+        "matched": [
+          "Data Analysis",
+          "Leadership"
+        ]
+      }
+    },
+    "final_score": 87,
+    "status": "SHORTLISTED",
+    "rejection_reason": null,
+    "matched_skills": [
+      "Data Analysis",
+      "Leadership"
+    ],
+    "missing_skills": [],
+    "tfidf_score": 7.61,
+    "combined_score": 63.18
+  },
+  {
+    "candidate_id": "RES_11847784",
+    "name": "Raj (ID:11847784)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": true,
+        "reason": "Experience OK: 15.0yrs >= 2.0yrs required"
+      },
+      "gate_3_must_skills": {
+        "status": "PASS",
+        "reason": "No must-have skills specified",
+        "matched": [
+          "Communication",
+          "Leadership"
+        ],
+        "missing": []
+      },
+      "gate_4_preferred_skills": {
+        "bonus_points": 7.0,
+        "matched": [
+          "Communication",
+          "Leadership"
+        ]
+      }
+    },
+    "final_score": 87,
+    "status": "SHORTLISTED",
+    "rejection_reason": null,
+    "matched_skills": [
+      "Communication",
+      "Leadership"
+    ],
+    "missing_skills": [],
+    "tfidf_score": 5.93,
+    "combined_score": 62.68
+  },
+  {
+    "candidate_id": "RES_18334783",
+    "name": "Divya (ID:18334783)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": true,
+        "reason": "Experience OK: 20.0yrs >= 2.0yrs required"
+      },
+      "gate_3_must_skills": {
+        "status": "PASS",
+        "reason": "No must-have skills specified",
+        "matched": [
+          "Communication",
+          "Leadership"
+        ],
+        "missing": []
+      },
+      "gate_4_preferred_skills": {
+        "bonus_points": 7.0,
+        "matched": [
+          "Communication",
+          "Leadership"
+        ]
+      }
+    },
+    "final_score": 87,
+    "status": "SHORTLISTED",
+    "rejection_reason": null,
+    "matched_skills": [
+      "Communication",
+      "Leadership"
+    ],
+    "missing_skills": [],
+    "tfidf_score": 5.81,
+    "combined_score": 62.64
+  },
+  {
+    "candidate_id": "RES_33176873",
+    "name": "Divya (ID:33176873)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": true,
+        "reason": "Experience OK: 20.0yrs >= 2.0yrs required"
+      },
+      "gate_3_must_skills": {
+        "status": "PASS",
+        "reason": "No must-have skills specified",
+        "matched": [
+          "Leadership"
+        ],
+        "missing": []
+      },
+      "gate_4_preferred_skills": {
+        "bonus_points": 3.5,
+        "matched": [
+          "Leadership"
+        ]
+      }
+    },
+    "final_score": 84,
+    "status": "SHORTLISTED",
+    "rejection_reason": null,
+    "matched_skills": [
+      "Leadership"
+    ],
+    "missing_skills": [],
+    "tfidf_score": 9.37,
+    "combined_score": 61.61
+  },
+  {
+    "candidate_id": "RES_25676643",
+    "name": "Divya (ID:25676643)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": true,
+        "reason": "Experience OK: 9.0yrs >= 2.0yrs required"
+      },
+      "gate_3_must_skills": {
+        "status": "PASS",
+        "reason": "No must-have skills specified",
+        "matched": [
+          "Leadership"
+        ],
+        "missing": []
+      },
+      "gate_4_preferred_skills": {
+        "bonus_points": 3.5,
+        "matched": [
+          "Leadership"
+        ]
+      }
+    },
+    "final_score": 84,
+    "status": "SHORTLISTED",
+    "rejection_reason": null,
+    "matched_skills": [
+      "Leadership"
+    ],
+    "missing_skills": [],
+    "tfidf_score": 7.43,
+    "combined_score": 61.03
+  },
+  {
+    "candidate_id": "RES_34554248",
+    "name": "Manish (ID:34554248)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": true,
+        "reason": "Experience OK: 30.0yrs >= 2.0yrs required"
+      },
+      "gate_3_must_skills": {
+        "status": "PASS",
+        "reason": "No must-have skills specified",
+        "matched": [
+          "Leadership"
+        ],
+        "missing": []
+      },
+      "gate_4_preferred_skills": {
+        "bonus_points": 3.5,
+        "matched": [
+          "Leadership"
+        ]
+      }
+    },
+    "final_score": 84,
+    "status": "SHORTLISTED",
+    "rejection_reason": null,
+    "matched_skills": [
+      "Leadership"
+    ],
+    "missing_skills": [],
+    "tfidf_score": 6.5,
+    "combined_score": 60.75
+  },
+  {
+    "candidate_id": "RES_51769822",
+    "name": "Vikram (ID:51769822)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": true,
+        "reason": "Experience OK: 30.0yrs >= 2.0yrs required"
+      },
+      "gate_3_must_skills": {
+        "status": "PASS",
+        "reason": "No must-have skills specified",
+        "matched": [
+          "Communication"
+        ],
+        "missing": []
+      },
+      "gate_4_preferred_skills": {
+        "bonus_points": 3.5,
+        "matched": [
+          "Communication"
+        ]
+      }
+    },
+    "final_score": 84,
+    "status": "SHORTLISTED",
+    "rejection_reason": null,
+    "matched_skills": [
+      "Communication"
+    ],
+    "missing_skills": [],
+    "tfidf_score": 4.83,
+    "combined_score": 60.25
+  },
+  {
+    "candidate_id": "RES_29297973",
+    "name": "Divya (ID:29297973)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": true,
+        "reason": "Experience OK: 3.0yrs >= 2.0yrs required"
+      },
+      "gate_3_must_skills": {
+        "status": "PASS",
+        "reason": "No must-have skills specified",
+        "matched": [
+          "Communication"
+        ],
+        "missing": []
+      },
+      "gate_4_preferred_skills": {
+        "bonus_points": 3.5,
+        "matched": [
+          "Communication"
+        ]
+      }
+    },
+    "final_score": 84,
+    "status": "SHORTLISTED",
+    "rejection_reason": null,
+    "matched_skills": [
+      "Communication"
+    ],
+    "missing_skills": [],
+    "tfidf_score": 4.17,
+    "combined_score": 60.05
+  },
+  {
+    "candidate_id": "RES_57667857",
+    "name": "Ritu (ID:57667857)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": true,
+        "reason": "Experience OK: 25.0yrs >= 2.0yrs required"
+      },
+      "gate_3_must_skills": {
+        "status": "PASS",
+        "reason": "No must-have skills specified",
+        "matched": [],
+        "missing": []
+      },
+      "gate_4_preferred_skills": {
+        "bonus_points": 0,
+        "matched": []
+      }
+    },
+    "final_score": 80,
+    "status": "SHORTLISTED",
+    "rejection_reason": null,
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 7.32,
+    "combined_score": 58.2
+  },
+  {
+    "candidate_id": "RES_87968870",
+    "name": "Rahul (ID:87968870)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": true,
+        "reason": "Experience OK: 11.0yrs >= 2.0yrs required"
+      },
+      "gate_3_must_skills": {
+        "status": "PASS",
+        "reason": "No must-have skills specified",
+        "matched": [],
+        "missing": []
+      },
+      "gate_4_preferred_skills": {
+        "bonus_points": 0,
+        "matched": []
+      }
+    },
+    "final_score": 80,
+    "status": "SHORTLISTED",
+    "rejection_reason": null,
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 5.68,
+    "combined_score": 57.7
+  },
+  {
+    "candidate_id": "RES_17812897",
+    "name": "Ritu (ID:17812897)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": false,
+        "reason": "Low experience: 0.0yrs < 2.0yrs required"
+      }
+    },
+    "final_score": 20,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 2 Failed: Low experience: 0.0yrs < 2.0yrs required",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 8.61,
+    "combined_score": 16.58
+  },
+  {
+    "candidate_id": "RES_19867922",
+    "name": "Vikram (ID:19867922)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": false,
+        "reason": "Low experience: 0.0yrs < 2.0yrs required"
+      }
+    },
+    "final_score": 20,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 2 Failed: Low experience: 0.0yrs < 2.0yrs required",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 8.19,
+    "combined_score": 16.46
+  },
+  {
+    "candidate_id": "RES_11480899",
+    "name": "Neha (ID:11480899)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": false,
+        "reason": "Low experience: 0.0yrs < 2.0yrs required"
+      }
+    },
+    "final_score": 20,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 2 Failed: Low experience: 0.0yrs < 2.0yrs required",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 7.96,
+    "combined_score": 16.39
+  },
+  {
+    "candidate_id": "RES_86184722",
+    "name": "Vikram (ID:86184722)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": false,
+        "reason": "Low experience: 0.0yrs < 2.0yrs required"
+      }
+    },
+    "final_score": 20,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 2 Failed: Low experience: 0.0yrs < 2.0yrs required",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 7.96,
+    "combined_score": 16.39
+  },
+  {
+    "candidate_id": "RES_12786012",
+    "name": "Vikram (ID:12786012)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": false,
+        "reason": "Low experience: 0.0yrs < 2.0yrs required"
+      }
+    },
+    "final_score": 20,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 2 Failed: Low experience: 0.0yrs < 2.0yrs required",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 7.42,
+    "combined_score": 16.23
+  },
+  {
+    "candidate_id": "RES_28419173",
+    "name": "Divya (ID:28419173)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": false,
+        "reason": "Low experience: 0.0yrs < 2.0yrs required"
+      }
+    },
+    "final_score": 20,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 2 Failed: Low experience: 0.0yrs < 2.0yrs required",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 7.03,
+    "combined_score": 16.11
+  },
+  {
+    "candidate_id": "RES_32896934",
+    "name": "Raj (ID:32896934)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": false,
+        "reason": "Low experience: 0.0yrs < 2.0yrs required"
+      }
+    },
+    "final_score": 20,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 2 Failed: Low experience: 0.0yrs < 2.0yrs required",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 6.75,
+    "combined_score": 16.02
+  },
+  {
+    "candidate_id": "RES_32947778",
+    "name": "Manish (ID:32947778)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": false,
+        "reason": "Low experience: 0.0yrs < 2.0yrs required"
+      }
+    },
+    "final_score": 20,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 2 Failed: Low experience: 0.0yrs < 2.0yrs required",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 6.56,
+    "combined_score": 15.97
+  },
+  {
+    "candidate_id": "RES_91930382",
+    "name": "Vikram (ID:91930382)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": false,
+        "reason": "Low experience: 0.0yrs < 2.0yrs required"
+      }
+    },
+    "final_score": 20,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 2 Failed: Low experience: 0.0yrs < 2.0yrs required",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 6.35,
+    "combined_score": 15.9
+  },
+  {
+    "candidate_id": "RES_59962788",
+    "name": "Manish (ID:59962788)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": false,
+        "reason": "Low experience: 1.0yrs < 2.0yrs required"
+      }
+    },
+    "final_score": 20,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 2 Failed: Low experience: 1.0yrs < 2.0yrs required",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 6.29,
+    "combined_score": 15.89
+  },
+  {
+    "candidate_id": "RES_23914451",
+    "name": "Sneha (ID:23914451)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": false,
+        "reason": "Low experience: 0.0yrs < 2.0yrs required"
+      }
+    },
+    "final_score": 20,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 2 Failed: Low experience: 0.0yrs < 2.0yrs required",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 5.95,
+    "combined_score": 15.78
+  },
+  {
+    "candidate_id": "RES_25824789",
+    "name": "Neha (ID:25824789)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": false,
+        "reason": "Low experience: 0.0yrs < 2.0yrs required"
+      }
+    },
+    "final_score": 20,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 2 Failed: Low experience: 0.0yrs < 2.0yrs required",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 5.73,
+    "combined_score": 15.72
+  },
+  {
+    "candidate_id": "RES_11763983",
+    "name": "Divya (ID:11763983)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": false,
+        "reason": "Low experience: 0.0yrs < 2.0yrs required"
+      }
+    },
+    "final_score": 20,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 2 Failed: Low experience: 0.0yrs < 2.0yrs required",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 5.59,
+    "combined_score": 15.68
+  },
+  {
+    "candidate_id": "RES_26202430",
+    "name": "Rahul (ID:26202430)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": false,
+        "reason": "Low experience: 0.0yrs < 2.0yrs required"
+      }
+    },
+    "final_score": 20,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 2 Failed: Low experience: 0.0yrs < 2.0yrs required",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 5.61,
+    "combined_score": 15.68
+  },
+  {
+    "candidate_id": "RES_15375009",
+    "name": "Neha (ID:15375009)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": false,
+        "reason": "Low experience: 0.0yrs < 2.0yrs required"
+      }
+    },
+    "final_score": 20,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 2 Failed: Low experience: 0.0yrs < 2.0yrs required",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 5.4,
+    "combined_score": 15.62
+  },
+  {
+    "candidate_id": "RES_11592605",
+    "name": "Meera (ID:11592605)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": false,
+        "reason": "Low experience: 0.0yrs < 2.0yrs required"
+      }
+    },
+    "final_score": 20,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 2 Failed: Low experience: 0.0yrs < 2.0yrs required",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 5.38,
+    "combined_score": 15.61
+  },
+  {
+    "candidate_id": "RES_41523474",
+    "name": "Raj (ID:41523474)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": false,
+        "reason": "Low experience: 0.0yrs < 2.0yrs required"
+      }
+    },
+    "final_score": 20,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 2 Failed: Low experience: 0.0yrs < 2.0yrs required",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 5.32,
+    "combined_score": 15.6
+  },
+  {
+    "candidate_id": "RES_46258701",
+    "name": "Sneha (ID:46258701)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": false,
+        "reason": "Low experience: 0.0yrs < 2.0yrs required"
+      }
+    },
+    "final_score": 20,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 2 Failed: Low experience: 0.0yrs < 2.0yrs required",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 5.29,
+    "combined_score": 15.59
+  },
+  {
+    "candidate_id": "RES_14225422",
+    "name": "Vikram (ID:14225422)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": false,
+        "reason": "Low experience: 0.0yrs < 2.0yrs required"
+      }
+    },
+    "final_score": 20,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 2 Failed: Low experience: 0.0yrs < 2.0yrs required",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 5.09,
+    "combined_score": 15.53
+  },
+  {
+    "candidate_id": "RES_26780935",
+    "name": "Meera (ID:26780935)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": false,
+        "reason": "Low experience: 0.0yrs < 2.0yrs required"
+      }
+    },
+    "final_score": 20,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 2 Failed: Low experience: 0.0yrs < 2.0yrs required",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 5.1,
+    "combined_score": 15.53
+  },
+  {
+    "candidate_id": "RES_93002334",
+    "name": "Raj (ID:93002334)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": false,
+        "reason": "Low experience: 0.0yrs < 2.0yrs required"
+      }
+    },
+    "final_score": 20,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 2 Failed: Low experience: 0.0yrs < 2.0yrs required",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 5.04,
+    "combined_score": 15.51
+  },
+  {
+    "candidate_id": "RES_22323967",
+    "name": "Ritu (ID:22323967)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": false,
+        "reason": "Low experience: 0.0yrs < 2.0yrs required"
+      }
+    },
+    "final_score": 20,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 2 Failed: Low experience: 0.0yrs < 2.0yrs required",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 4.85,
+    "combined_score": 15.46
+  },
+  {
+    "candidate_id": "RES_19717385",
+    "name": "Meera (ID:19717385)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": false,
+        "reason": "Low experience: 0.0yrs < 2.0yrs required"
+      }
+    },
+    "final_score": 20,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 2 Failed: Low experience: 0.0yrs < 2.0yrs required",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 4.73,
+    "combined_score": 15.42
+  },
+  {
+    "candidate_id": "RES_49937469",
+    "name": "Neha (ID:49937469)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": false,
+        "reason": "Low experience: 0.0yrs < 2.0yrs required"
+      }
+    },
+    "final_score": 20,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 2 Failed: Low experience: 0.0yrs < 2.0yrs required",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 4.22,
+    "combined_score": 15.27
+  },
+  {
+    "candidate_id": "RES_30163002",
+    "name": "Vikram (ID:30163002)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": false,
+        "reason": "Low experience: 0.0yrs < 2.0yrs required"
+      }
+    },
+    "final_score": 20,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 2 Failed: Low experience: 0.0yrs < 2.0yrs required",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 3.99,
+    "combined_score": 15.2
+  },
+  {
+    "candidate_id": "RES_21265194",
+    "name": "Raj (ID:21265194)",
+    "gates": {
+      "gate_1_education": {
+        "pass": true,
+        "reason": "Education match: Bachelor'S satisfies Bachelor'S"
+      },
+      "gate_2_experience": {
+        "pass": false,
+        "reason": "Low experience: 0.0yrs < 2.0yrs required"
+      }
+    },
+    "final_score": 20,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 2 Failed: Low experience: 0.0yrs < 2.0yrs required",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 3.48,
+    "combined_score": 15.04
+  },
+  {
+    "candidate_id": "RES_23155093",
+    "name": "Divya (ID:23155093)",
+    "gates": {
+      "gate_1_education": {
+        "pass": false,
+        "reason": "No education detected in resume"
+      }
+    },
+    "final_score": 0,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 1 Failed: No education detected in resume",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 9.82,
+    "combined_score": 2.95
+  },
+  {
+    "candidate_id": "RES_24184357",
+    "name": "Ritu (ID:24184357)",
+    "gates": {
+      "gate_1_education": {
+        "pass": false,
+        "reason": "No education detected in resume"
+      }
+    },
+    "final_score": 0,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 1 Failed: No education detected in resume",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 9.79,
+    "combined_score": 2.94
+  },
+  {
+    "candidate_id": "RES_73077810",
+    "name": "Rahul (ID:73077810)",
+    "gates": {
+      "gate_1_education": {
+        "pass": false,
+        "reason": "Education mismatch: has [\"master's\"], needs [\"bachelor's\"]"
+      }
+    },
+    "final_score": 0,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 1 Failed: Education mismatch: has [\"master's\"], needs [\"bachelor's\"]",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 7.75,
+    "combined_score": 2.32
+  },
+  {
+    "candidate_id": "RES_17855844",
+    "name": "Raj (ID:17855844)",
+    "gates": {
+      "gate_1_education": {
+        "pass": false,
+        "reason": "Education mismatch: has [\"master's\"], needs [\"bachelor's\"]"
+      }
+    },
+    "final_score": 0,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 1 Failed: Education mismatch: has [\"master's\"], needs [\"bachelor's\"]",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 6.83,
+    "combined_score": 2.05
+  },
+  {
+    "candidate_id": "RES_29149998",
+    "name": "Manish (ID:29149998)",
+    "gates": {
+      "gate_1_education": {
+        "pass": false,
+        "reason": "Education mismatch: has [\"master's\"], needs [\"bachelor's\"]"
+      }
+    },
+    "final_score": 0,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 1 Failed: Education mismatch: has [\"master's\"], needs [\"bachelor's\"]",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 6.48,
+    "combined_score": 1.94
+  },
+  {
+    "candidate_id": "RES_18155310",
+    "name": "Rahul (ID:18155310)",
+    "gates": {
+      "gate_1_education": {
+        "pass": false,
+        "reason": "Education mismatch: has [\"master's\"], needs [\"bachelor's\"]"
+      }
+    },
+    "final_score": 0,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 1 Failed: Education mismatch: has [\"master's\"], needs [\"bachelor's\"]",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 6.13,
+    "combined_score": 1.84
+  },
+  {
+    "candidate_id": "RES_18316239",
+    "name": "Neha (ID:18316239)",
+    "gates": {
+      "gate_1_education": {
+        "pass": false,
+        "reason": "Education mismatch: has [\"master's\"], needs [\"bachelor's\"]"
+      }
+    },
+    "final_score": 0,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 1 Failed: Education mismatch: has [\"master's\"], needs [\"bachelor's\"]",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 6.02,
+    "combined_score": 1.81
+  },
+  {
+    "candidate_id": "RES_19616406",
+    "name": "Arjun (ID:19616406)",
+    "gates": {
+      "gate_1_education": {
+        "pass": false,
+        "reason": "No education detected in resume"
+      }
+    },
+    "final_score": 0,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 1 Failed: No education detected in resume",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 5.88,
+    "combined_score": 1.76
+  },
+  {
+    "candidate_id": "RES_27490876",
+    "name": "Arjun (ID:27490876)",
+    "gates": {
+      "gate_1_education": {
+        "pass": false,
+        "reason": "Education mismatch: has [\"master's\"], needs [\"bachelor's\"]"
+      }
+    },
+    "final_score": 0,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 1 Failed: Education mismatch: has [\"master's\"], needs [\"bachelor's\"]",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 5.29,
+    "combined_score": 1.59
+  },
+  {
+    "candidate_id": "RES_16852973",
+    "name": "Divya (ID:16852973)",
+    "gates": {
+      "gate_1_education": {
+        "pass": false,
+        "reason": "Education mismatch: has ['diploma'], needs [\"bachelor's\"]"
+      }
+    },
+    "final_score": 0,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 1 Failed: Education mismatch: has ['diploma'], needs [\"bachelor's\"]",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 4.19,
+    "combined_score": 1.26
+  },
+  {
+    "candidate_id": "RES_32977530",
+    "name": "Rahul (ID:32977530)",
+    "gates": {
+      "gate_1_education": {
+        "pass": false,
+        "reason": "No education detected in resume"
+      }
+    },
+    "final_score": 0,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 1 Failed: No education detected in resume",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 3.69,
+    "combined_score": 1.11
+  },
+  {
+    "candidate_id": "RES_17422560",
+    "name": "Rahul (ID:17422560)",
+    "gates": {
+      "gate_1_education": {
+        "pass": false,
+        "reason": "No education detected in resume"
+      }
+    },
+    "final_score": 0,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 1 Failed: No education detected in resume",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 3.59,
+    "combined_score": 1.08
+  },
+  {
+    "candidate_id": "RES_27018550",
+    "name": "Rahul (ID:27018550)",
+    "gates": {
+      "gate_1_education": {
+        "pass": false,
+        "reason": "No education detected in resume"
+      }
+    },
+    "final_score": 0,
+    "status": "REJECTED",
+    "rejection_reason": "Gate 1 Failed: No education detected in resume",
+    "matched_skills": [],
+    "missing_skills": [],
+    "tfidf_score": 3.1,
+    "combined_score": 0.93
+  }
+]

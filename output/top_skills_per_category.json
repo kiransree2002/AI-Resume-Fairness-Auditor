@@ -1,0 +1,170 @@
+{
+  "Hr": [
+    "Communication",
+    "Excel",
+    "Leadership",
+    "Project Management",
+    "Time Management"
+  ],
+  "Designer": [
+    "Communication",
+    "Excel",
+    "Leadership",
+    "Project Management",
+    "Html"
+  ],
+  "Information Technology": [
+    "Communication",
+    "Project Management",
+    "Leadership",
+    "Sql",
+    "Linux"
+  ],
+  "Teacher": [
+    "Communication",
+    "Leadership",
+    "Excel",
+    "Problem Solving",
+    "Time Management"
+  ],
+  "Advocate": [
+    "Communication",
+    "Excel",
+    "Leadership",
+    "Problem Solving",
+    "Time Management"
+  ],
+  "Business Development": [
+    "Leadership",
+    "Communication",
+    "Excel",
+    "Project Management",
+    "Problem Solving"
+  ],
+  "Healthcare": [
+    "Communication",
+    "Leadership",
+    "Excel",
+    "Project Management",
+    "Problem Solving"
+  ],
+  "Fitness": [
+    "Communication",
+    "Leadership",
+    "Excel",
+    "Time Management",
+    "Problem Solving"
+  ],
+  "Agriculture": [
+    "Communication",
+    "Leadership",
+    "Excel",
+    "Project Management",
+    "C"
+  ],
+  "Bpo": [
+    "Leadership",
+    "Problem Solving",
+    "Excel",
+    "Communication",
+    "Project Management"
+  ],
+  "Sales": [
+    "Communication",
+    "Leadership",
+    "Excel",
+    "Time Management",
+    "Problem Solving"
+  ],
+  "Consultant": [
+    "Communication",
+    "Project Management",
+    "Leadership",
+    "Excel",
+    "Sql"
+  ],
+  "Digital Media": [
+    "Communication",
+    "Leadership",
+    "Excel",
+    "Project Management",
+    "Html"
+  ],
+  "Automobile": [
+    "Communication",
+    "Excel",
+    "Leadership",
+    "Time Management",
+    "Problem Solving"
+  ],
+  "Chef": [
+    "Leadership",
+    "Communication",
+    "Excel",
+    "Time Management",
+    "Problem Solving"
+  ],
+  "Finance": [
+    "Excel",
+    "Communication",
+    "Leadership",
+    "Time Management",
+    "Project Management"
+  ],
+  "Apparel": [
+    "Communication",
+    "Excel",
+    "Leadership",
+    "Problem Solving",
+    "Time Management"
+  ],
+  "Engineering": [
+    "Communication",
+    "Leadership",
+    "Project Management",
+    "Excel",
+    "C"
+  ],
+  "Accountant": [
+    "Excel",
+    "Communication",
+    "Problem Solving",
+    "Leadership",
+    "Time Management"
+  ],
+  "Construction": [
+    "Communication",
+    "Project Management",
+    "Leadership",
+    "Excel",
+    "Problem Solving"
+  ],
+  "Public Relations": [
+    "Communication",
+    "Leadership",
+    "Excel",
+    "Project Management",
+    "Problem Solving"
+  ],
+  "Banking": [
+    "Communication",
+    "Excel",
+    "Leadership",
+    "Project Management",
+    "Problem Solving"
+  ],
+  "Arts": [
+    "Communication",
+    "Leadership",
+    "Excel",
+    "Problem Solving",
+    "Time Management"
+  ],
+  "Aviation": [
+    "Communication",
+    "Leadership",
+    "Excel",
+    "Project Management",
+    "Problem Solving"
+  ]
+}
