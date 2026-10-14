@@ -1,0 +1,216 @@
+{
+  "metadata": {
+    "job_title": "Scraped Role",
+    "company_name": "Company",
+    "source_url": "https://en.wikipedia.org/wiki/Machine_learning",
+    "created_at": "2026-10-14 12:20:03"
+  },
+  "gate_configuration": {
+    "gate_order": [
+      "skills",
+      "education",
+      "experience"
+    ],
+    "gate_weights": {
+      "skills": 0.5,
+      "education": 0.25,
+      "experience": 0.25
+    }
+  },
+  "requirements": {
+    "skills": {
+      "must_have": [
+        {
+          "skill": "C",
+          "importance": 0.9,
+          "category": "Must-Have",
+          "source": "Explicit clue ('expert')"
+        },
+        {
+          "skill": "Go",
+          "importance": 0.95,
+          "category": "Must-Have",
+          "source": "Explicit clue ('must')"
+        },
+        {
+          "skill": "Machine Learning",
+          "importance": 0.9,
+          "category": "Must-Have",
+          "source": "Domain Logic (Core for Data Science)"
+        },
+        {
+          "skill": "Python",
+          "importance": 0.9,
+          "category": "Must-Have",
+          "source": "Domain Logic (Core for Data Science)"
+        },
+        {
+          "skill": "R",
+          "importance": 0.9,
+          "category": "Must-Have",
+          "source": "Explicit clue ('expert')"
+        },
+        {
+          "skill": "Scikit-Learn",
+          "importance": 0.9,
+          "category": "Must-Have",
+          "source": "Domain Logic (Core for Data Science)"
+        },
+        {
+          "skill": "Statistics",
+          "importance": 0.9,
+          "category": "Must-Have",
+          "source": "Explicit clue ('expert')"
+        }
+      ],
+      "preferred": [
+        {
+          "skill": "Artificial Intelligence",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Azure",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Collaboration",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Computer Vision",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Data Analysis",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Data Mining",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Data Science",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Deep Learning",
+          "importance": 0.65,
+          "category": "Preferred",
+          "source": "Domain Logic (Preferred for Data Science)"
+        },
+        {
+          "skill": "Excel",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Keras",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Large Language Models",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Lightgbm",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Llm",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Natural Language Processing",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Opencv",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Oracle",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Pytorch",
+          "importance": 0.65,
+          "category": "Preferred",
+          "source": "Domain Logic (Preferred for Data Science)"
+        },
+        {
+          "skill": "React",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Spark",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Swift",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Tensorflow",
+          "importance": 0.65,
+          "category": "Preferred",
+          "source": "Domain Logic (Preferred for Data Science)"
+        },
+        {
+          "skill": "Xgboost",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        }
+      ],
+      "total_skills_detected": 29
+    },
+    "education": {
+      "required_degrees": [
+        "Bachelor's",
+        "Doctorate",
+        "Master's"
+      ],
+      "importance": 0.85
+    },
+    "experience": {
+      "min_years": 2.0,
+      "importance": 0.8
+    }
+  },
+  "raw_character_count": 138806
+}

@@ -13,6 +13,7 @@ Team: AI/ML (Week 1 Rebuild Deliverable)
 import json
 import logging
 import re
+import urllib3
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Any, Optional, Tuple
@@ -27,6 +28,9 @@ from config import (
 )
 from text_cleaner import clean_text
 from skill_extractor import extract_skills, extract_experience_years, extract_education
+
+# Disable SSL warnings for local Windows environments
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # -----------------------------------------------------------
 # LOGGING SETUP
@@ -76,13 +80,14 @@ ROLE_SKILL_PRIORITIES = {
 
 
 # -----------------------------------------------------------
-# 2. WEB SCRAPER
+# 2. WEB SCRAPER (ROBUST)
 # -----------------------------------------------------------
 
 def scrape_job_url(url: str) -> str:
     """
     Fetches raw text content from a public job posting URL.
     Strips scripts, styles, navigation, headers, and footers.
+    Includes robust error handling for Windows SSL/network glitches.
     """
     if not url or not url.startswith("http"):
         logger.warning(f"Invalid URL provided: {url}")
@@ -92,13 +97,17 @@ def scrape_job_url(url: str) -> str:
         "User-Agent": (
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
             "AppleWebKit/537.36 (KHTML, like Gecko) "
-            "Chrome/118.0.0.0 Safari/537.36"
-        )
+            "Chrome/120.0.0.0 Safari/537.36"
+        ),
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Accept-Encoding": "gzip, deflate",
+        "Connection": "keep-alive"
     }
 
     try:
         logger.info(f"Connecting to web link: {url}")
-        response = requests.get(url, headers=headers, timeout=12)
+        response = requests.get(url, headers=headers, timeout=15, verify=False)
 
         if response.status_code == 200:
             soup = BeautifulSoup(response.text, "html.parser")
@@ -108,10 +117,16 @@ def scrape_job_url(url: str) -> str:
             logger.info(f"Successfully scraped {len(text)} raw characters from URL.")
             return text
         else:
-            logger.warning(f"Webpage returned status code: {response.status_code}")
+            logger.warning(f"Webpage returned HTTP status code: {response.status_code}")
             return ""
+    except requests.exceptions.Timeout:
+        logger.error("Request timed out after 15 seconds.")
+        return ""
+    except requests.exceptions.ConnectionError as e:
+        logger.error(f"Network connection error: {e}")
+        return ""
     except Exception as e:
-        logger.error(f"Scraping failed with error: {e}")
+        logger.error(f"Scraping failed with error: {type(e).__name__}: {e}")
         return ""
 
 
@@ -242,7 +257,6 @@ def save_jd(jd_data: Dict[str, Any], custom_name: Optional[str] = None) -> Path:
     Saves a structured JD to the saved_jds/ folder for future reuse.
     """
     title = custom_name if custom_name else jd_data.get("metadata", {}).get("job_title", "custom_job")
-    # Clean filename of special characters
     safe_filename = re.sub(r'[^a-zA-Z0-9_\-]', '_', title.lower().strip()) + ".json"
     file_path = SAVED_JDS_DIR / safe_filename
 
@@ -326,23 +340,20 @@ if __name__ == "__main__":
     • Familiarity with Docker is a plus.
     """
 
-    # 1. Parse text into editable structured JSON
+    # Test parsing
     structured = parse_job_description(
         raw_or_scraped_text=sample_hr_text,
         role_title="Senior Data Scientist",
         company_name="Outlier AI"
     )
 
-    # 2. Save it into the library
     saved_path = save_jd(structured, custom_name="Senior Data Scientist Outlier")
 
-    # 3. List all saved JDs in the library
     saved_library = list_saved_jds()
     logger.info(f"\nCurrent Saved JDs in Library ({len(saved_library)}):")
     for item in saved_library:
         logger.info(f"  📁 {item['filename']} | {item['title']} ({item['company']}) | Created: {item['created_at']}")
 
-    # 4. Preview the structured output
-    logger.info("\nStructured JSON Preview (Editable Schema):")
+    logger.info("\nStructured JSON Preview:")
     logger.info(json.dumps(structured, indent=2))
     logger.info("=" * 60)
