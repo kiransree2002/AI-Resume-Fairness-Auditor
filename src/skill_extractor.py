@@ -17,7 +17,10 @@ from typing import Dict, List, Any
 # -----------------------------------------------------------
 # LOAD SPACY MODEL
 # -----------------------------------------------------------
-nlp = spacy.load("en_core_web_sm")
+try:
+    nlp = spacy.load("en_core_web_sm")
+except OSError:
+    nlp = spacy.blank("en")
 
 
 # -----------------------------------------------------------
@@ -115,6 +118,37 @@ def extract_skills(text: str) -> List[str]:
         extracted.add(span.text.title())
 
     return sorted(list(extracted))
+
+
+def extract_skill_experience_years(text: str, skills: List[str]) -> Dict[str, float]:
+    """Extract year values stated in the same sentence as each skill."""
+    if not text or not skills:
+        return {}
+
+    sentences = re.split(r"(?<=[.!?;])\s+|\n+", text)
+    years_pattern = re.compile(
+        r"(?<!\d)(\d+(?:\.\d+)?)\s*\+?\s*(?:years?|yrs?)\b",
+        flags=re.IGNORECASE,
+    )
+    skill_experience = {}
+
+    for skill in skills:
+        skill_pattern = re.compile(
+            rf"(?<!\w){re.escape(skill)}(?!\w)",
+            flags=re.IGNORECASE,
+        )
+        years_found = []
+        for sentence in sentences:
+            if not skill_pattern.search(sentence):
+                continue
+            for match in years_pattern.findall(sentence):
+                years = float(match)
+                if 0.5 <= years <= 45:
+                    years_found.append(years)
+        if years_found:
+            skill_experience[skill] = max(years_found)
+
+    return skill_experience
 
 
 # -----------------------------------------------------------

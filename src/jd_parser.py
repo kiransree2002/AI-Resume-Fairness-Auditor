@@ -27,7 +27,12 @@ from config import (
     DEFAULT_GATE_WEIGHTS
 )
 from text_cleaner import clean_text
-from skill_extractor import extract_skills, extract_experience_years, extract_education
+from skill_extractor import (
+    extract_skills,
+    extract_experience_years,
+    extract_education,
+    extract_skill_experience_years,
+)
 
 # Disable SSL warnings for local Windows environments
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -207,6 +212,10 @@ def parse_job_description(
     skills = extract_skills(cleaned)
     exp_years = extract_experience_years(cleaned)
     education = extract_education(cleaned)
+    skill_experience = extract_skill_experience_years(
+        raw_or_scraped_text,
+        skills,
+    )
 
     weighted_skills = [
         infer_skill_importance(skill, raw_or_scraped_text, role_title)
@@ -238,7 +247,8 @@ def parse_job_description(
                 "importance": 0.85
             },
             "experience": {
-                "min_years": exp_years if exp_years > 0 else 2.0,
+                "min_years": exp_years,
+                "skill_years": skill_experience,
                 "importance": 0.80
             }
         },

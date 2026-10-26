@@ -9,3 +9,5 @@ requests
 plotly
 matplotlib
 streamlit
+python-docx
+sentence-transformers
