@@ -150,6 +150,44 @@ def evaluate_experience_gate(
     """
     min_years = float(jd_experience.get("min_years", 0.0))
     candidate_years = float(candidate_experience.get("years", 0.0))
+    required_skill_years = jd_experience.get("skill_years", {})
+    candidate_skill_years = {
+        skill.lower(): float(years)
+        for skill, years in candidate_experience.get("skill_years", {}).items()
+    }
+
+    if required_skill_years:
+        skill_scores = []
+        unmet_skills = []
+        for skill, required_years in required_skill_years.items():
+            required_years = float(required_years)
+            if required_years <= 0:
+                continue
+            actual_years = candidate_skill_years.get(skill.lower(), 0.0)
+            if actual_years >= required_years:
+                ratio = min(actual_years / required_years, 2.0)
+                skill_scores.append(0.7 + (ratio - 1.0) * 0.3)
+            else:
+                skill_scores.append(
+                    (actual_years / required_years) * 0.5
+                )
+                unmet_skills.append(skill)
+
+        if skill_scores:
+            score_pct = sum(skill_scores) / len(skill_scores)
+            if unmet_skills:
+                return (
+                    "FAIL",
+                    round(score_pct, 3),
+                    "Skill-specific experience not met for: "
+                    + ", ".join(unmet_skills)
+                    + ".",
+                )
+            return (
+                "PASS",
+                round(score_pct, 3),
+                "Required experience met for all specified skills.",
+            )
 
     if min_years == 0:
         return "PASS", 1.0, "No minimum experience required."
@@ -193,7 +231,8 @@ def run_candidate_cascade(
     jd_json: Dict[str, Any],
     candidate_profile: Dict[str, Any],
     gate_order: Optional[List[str]] = None,
-    gate_weights: Optional[Dict[str, float]] = None
+    gate_weights: Optional[Dict[str, float]] = None,
+    stop_on_failure: bool = True
 ) -> Dict[str, Any]:
     """
     Executes the configurable gate cascade for a single candidate.
@@ -203,6 +242,7 @@ def run_candidate_cascade(
         candidate_profile: Structured resume from resume_parser.py
         gate_order: HR-defined gate execution order (default: skills → education → experience)
         gate_weights: HR-defined weight per gate (default: 0.50, 0.25, 0.25)
+        stop_on_failure: Whether a failed gate should prevent evaluating later gates.
 
     Returns:
         Full evaluation report with per-gate results and final score.
@@ -265,10 +305,11 @@ def run_candidate_cascade(
 
         # Early stopping: FAIL on a mandatory gate
         if status == "FAIL":
-            report["final_gate_score"] = round(total_weighted_score, 2)
-            report["rejection_reason"] = f"Gate '{gate_name}' failed: {reason}"
-            report["status"] = "REJECTED"
-            return report  # 🛑 EARLY STOP
+            if stop_on_failure:
+                report["final_gate_score"] = round(total_weighted_score, 2)
+                report["rejection_reason"] = f"Gate '{gate_name}' failed: {reason}"
+                report["status"] = "REJECTED"
+                return report
 
     # Final score and status
     final_score = min(round(total_weighted_score, 2), 100.0)

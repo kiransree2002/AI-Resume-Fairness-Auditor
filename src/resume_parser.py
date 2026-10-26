@@ -19,7 +19,11 @@ import pandas as pd
 
 from config import OUTPUT_DIR
 from text_cleaner import clean_text
-from skill_extractor import extract_skills, extract_education
+from skill_extractor import (
+    extract_skills,
+    extract_education,
+    extract_skill_experience_years,
+)
 
 # -----------------------------------------------------------
 # LOGGING SETUP
@@ -90,6 +94,7 @@ def parse_resume(
     skills = extract_skills(cleaned)
     education = extract_education(cleaned)
     experience_years = extract_validated_experience(cleaned)
+    skill_experience = extract_skill_experience_years(raw_text, skills)
 
     # Soft skills list to separate from hard technical skills
     soft_skills_set = {
@@ -110,7 +115,8 @@ def parse_resume(
             "has_higher_education": len(education) > 0
         },
         "experience": {
-            "years": experience_years
+            "years": experience_years,
+            "skill_years": skill_experience,
         },
         "skills": {
             "technical": technical_skills,
