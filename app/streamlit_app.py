@@ -3,7 +3,9 @@ import io
 import sys
 import re
 from collections import Counter
+from datetime import datetime
 from pathlib import Path
+from uuid import uuid4
 
 import pandas as pd
 import plotly.graph_objects as go
@@ -24,16 +26,859 @@ from semantic_scorer import (
 
 
 st.set_page_config(
-    page_title="AI Resume Screening",
-    page_icon="📄",
+    page_title="TalentLens | Recruitment intelligence",
+    page_icon=":material/description:",
     layout="wide",
 )
 
-st.title("AI-Powered Resume Screening")
-st.caption(
-    "Upload a job description and resumes to compare requirements, "
-    "rank candidates and review the screening results."
+st.markdown(
+    """
+    <style>
+    .st-key-overview-hero {
+        padding: 1.7rem 1.5rem;
+        background: linear-gradient(115deg, #ffffff 0%, #f1f3fc 100%);
+        animation: workspace-enter 220ms ease-out both;
+    }
+    [data-testid="stMetric"] {
+        border: 1px solid #e6e8f0;
+        border-radius: 8px;
+        padding: 1rem 1.1rem;
+        background: #ffffff;
+        transition: border-color 180ms ease, box-shadow 180ms ease;
+    }
+    [data-testid="stMetric"]:hover {
+        border-color: #c4c9ef;
+        box-shadow: 0 4px 14px rgba(34, 41, 79, 0.06);
+    }
+    [data-testid="stVerticalBlockBorderWrapper"] {
+        transition: border-color 180ms ease, box-shadow 180ms ease;
+    }
+    [data-testid="stVerticalBlockBorderWrapper"]:hover {
+        border-color: #c4c9ef;
+        box-shadow: 0 5px 16px rgba(34, 41, 79, 0.07);
+    }
+    [data-testid="stPlotlyChart"] {
+        transition: filter 180ms ease;
+    }
+    [data-testid="stPlotlyChart"]:hover {
+        filter: drop-shadow(0 3px 8px rgba(34, 41, 79, 0.08));
+    }
+    .stButton > button {
+        border-radius: 8px;
+        transition: background-color 160ms ease, box-shadow 160ms ease;
+    }
+    .stButton > button:hover {
+        box-shadow: 0 3px 12px rgba(34, 41, 79, 0.10);
+    }
+    @keyframes workspace-enter {
+        from { opacity: 0; transform: translateY(5px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
 )
+
+
+def open_new_screening():
+    st.session_state["workspace_view"] = "New screening"
+
+
+def open_overview():
+    st.session_state["workspace_view"] = "Overview"
+
+
+def open_saved_results(batch_id):
+    archived = st.session_state.get("screening_result_archive", {}).get(batch_id)
+    if archived is None:
+        st.session_state["history_notice"] = (
+            "This batch's candidate details are no longer available in the current session."
+        )
+        return
+
+    st.session_state["screening_results"] = pd.read_json(
+        io.StringIO(archived),
+        orient="split",
+    )
+    batch = next(
+        (item for item in st.session_state.get("screening_history", [])
+         if item.get("batch_id") == batch_id),
+        {},
+    )
+    st.session_state["active_job_title"] = batch.get(
+        "job_title",
+        "Previous screening",
+    )
+    st.session_state["workspace_view"] = "New screening"
+
+
+def add_chart_hover(chart):
+    chart.update_layout(
+        hovermode="closest",
+        hoverlabel={
+            "bgcolor": "#171A2B",
+            "bordercolor": "#6257E8",
+            "font": {"color": "#FFFFFF", "size": 13},
+        },
+    )
+    for trace in chart.data:
+        if trace.type == "histogram":
+            trace.hovertemplate = (
+                "Score: %{x}<br>Candidates in score band: %{y}<extra></extra>"
+            )
+        elif trace.type == "bar" and trace.orientation == "h":
+            trace.hovertemplate = (
+                "<b>%{y}</b><br>%{fullData.name}: %{x:.1f}"
+                "<extra></extra>"
+            )
+        elif trace.type == "bar":
+            trace.hovertemplate = (
+                "<b>%{x}</b><br>%{fullData.name}: %{y:.1f}"
+                "<extra></extra>"
+            )
+    return chart
+
+
+def calculate_fairness_rates(results_df, demographic_df, group_column):
+    """Calculate selection-rate gaps from explicitly supplied demographic labels."""
+    labels = demographic_df.copy()
+    labels["Candidate_ID"] = labels["Candidate_ID"].astype(str).str.strip()
+    joined = results_df[["Candidate_ID", "Category"]].copy()
+    joined["Candidate_ID"] = joined["Candidate_ID"].astype(str).str.strip()
+    joined = joined.merge(labels, on="Candidate_ID", how="inner")
+
+    invalid_labels = {
+        "", "unknown", "unspecified", "not disclosed",
+        "prefer not to say", "not provided", "not independently assessed",
+        "not assessed", "n/a", "na", "nan", "none",
+    }
+    joined[group_column] = joined[group_column].astype(str).str.strip()
+    joined = joined[~joined[group_column].str.lower().isin(invalid_labels)]
+    if joined.empty:
+        return joined, pd.DataFrame(), None, None
+
+    rates = joined.groupby(group_column).agg(
+        Total=("Candidate_ID", "count"),
+        Shortlisted=(
+            "Category",
+            lambda values: int((values == "Shortlisted").sum()),
+        ),
+    )
+    rates["Shortlist_Rate"] = rates["Shortlisted"] / rates["Total"] * 100
+    parity_gap = rates["Shortlist_Rate"].max() - rates["Shortlist_Rate"].min()
+
+    opportunity_gap = None
+    if "Qualified" in joined.columns:
+        qualified_values = joined["Qualified"].astype(str).str.strip().str.lower()
+        joined["Qualified_Valid"] = qualified_values.isin(
+            {"true", "yes", "1", "qualified"}
+        )
+        qualified = joined[joined["Qualified_Valid"]]
+        qualified_counts = qualified.groupby(group_column).agg(
+            Qualified_Total=("Candidate_ID", "count"),
+            Qualified_Shortlisted=(
+                "Category",
+                lambda values: int((values == "Shortlisted").sum()),
+            ),
+        )
+        qualified_counts["Equal_Opportunity_Rate"] = (
+            qualified_counts["Qualified_Shortlisted"]
+            / qualified_counts["Qualified_Total"]
+            * 100
+        )
+        if len(qualified_counts) >= 2:
+            rates = rates.join(qualified_counts, how="left")
+            opportunity_rates = qualified_counts["Equal_Opportunity_Rate"]
+            opportunity_gap = (
+                opportunity_rates.max() - opportunity_rates.min()
+            )
+
+    return joined, rates, float(parity_gap), opportunity_gap
+
+
+def build_fairness_export(results_df, verified_labels=None):
+    """Export screening facts and only explicitly supplied audit labels."""
+    export_df = results_df.copy().astype(object)
+    export_df = export_df.where(pd.notna(export_df), "Not provided")
+    for column in export_df.columns:
+        export_df[column] = export_df[column].apply(
+            lambda value: (
+                "Not provided"
+                if isinstance(value, str) and not value.strip()
+                else value
+            )
+        )
+    export_df["Gender"] = "Not provided"
+    export_df["Age_Group"] = "Not provided"
+    export_df["Qualified"] = "Not independently assessed"
+    export_df["Qualification_Source"] = "Not provided"
+
+    if verified_labels is not None and not verified_labels.empty:
+        normalized_columns = {
+            re.sub(r"[^a-z]", "", column.lower()): column
+            for column in verified_labels.columns
+        }
+        id_column = normalized_columns.get("candidateid")
+        if id_column:
+            labels = verified_labels.copy()
+            labels["_Candidate_ID"] = labels[id_column].astype(str).str.strip()
+            label_lookup = labels.drop_duplicates("_Candidate_ID").set_index(
+                "_Candidate_ID"
+            )
+            candidate_ids = export_df["Candidate_ID"].astype(str).str.strip()
+            source_columns = {
+                "Gender": normalized_columns.get("gender"),
+                "Age_Group": normalized_columns.get("agegroup"),
+                "Qualified": normalized_columns.get("qualified"),
+                "Qualification_Source": normalized_columns.get("qualificationsource"),
+            }
+            for output_column, source_column in source_columns.items():
+                if not source_column:
+                    continue
+                mapped = candidate_ids.map(label_lookup[source_column])
+                valid = mapped.notna() & mapped.astype(str).str.strip().ne("")
+                export_df.loc[valid, output_column] = mapped.loc[valid].astype(str)
+
+            qualified_source = source_columns["Qualified"]
+            qualification_source = source_columns["Qualification_Source"]
+            if qualified_source and not qualification_source:
+                has_qualified_label = export_df["Qualified"].isin(
+                    {"yes", "no", "true", "false", "1", "0", "qualified", "not qualified"}
+                )
+                export_df.loc[has_qualified_label, "Qualification_Source"] = (
+                    "Recruiter-provided CSV"
+                )
+
+    export_df = export_df.where(pd.notna(export_df), "Not provided")
+    for column in export_df.columns:
+        export_df[column] = export_df[column].apply(
+            lambda value: (
+                "Not provided"
+                if isinstance(value, str) and not value.strip()
+                else value
+            )
+        )
+    return export_df
+
+
+with st.sidebar:
+    st.markdown(":material/blur_on: **TalentLens**")
+    st.caption("Recruitment intelligence")
+    workspace_view = st.radio(
+        "Workspace",
+        ["Overview", "New screening", "Screening history", "Fairness audit"],
+        key="workspace_view",
+        label_visibility="collapsed",
+    )
+    st.caption("Your screening data stays in this session.")
+
+
+screening_history = st.session_state.get("screening_history", [])
+latest_results = st.session_state.get("screening_results")
+role_title = st.session_state.get("active_job_title", "No role selected")
+
+if workspace_view == "Screening history":
+    st.title("Screening history", icon=":material/history:")
+    st.caption("Completed batches for this browser session")
+    if screening_history:
+        for session in screening_history[:20]:
+            history_columns = st.columns([2.4, 1, 1, 1, 1.2])
+            history_columns[0].markdown(
+                f"**{session['job_title']}**  \n{session['created_at']}"
+            )
+            history_columns[1].caption(f"{session['total']} resumes")
+            history_columns[2].caption(f"{session['shortlisted']} shortlisted")
+            history_columns[3].caption(f"{session['under_review']} to review")
+            if session.get("batch_id"):
+                history_columns[4].button(
+                    "View results",
+                    key=f"history_view_{session['batch_id']}",
+                    icon=":material/arrow_forward:",
+                    on_click=open_saved_results,
+                    args=(session["batch_id"],),
+                )
+            else:
+                history_columns[4].caption("Results unavailable")
+    else:
+        st.info("Completed screening batches will appear here.")
+    st.button(
+        "Start a screening",
+        type="primary",
+        icon=":material/add:",
+        on_click=open_new_screening,
+    )
+    st.stop()
+
+
+if workspace_view == "Fairness audit":
+    st.title("Fairness audit", icon=":material/balance:")
+    st.caption(
+        "Review selection-rate differences using verified labels. "
+        "A disparity is a signal for investigation, not proof of bias or fairness."
+    )
+
+    if latest_results is None or latest_results.empty:
+        st.info("Complete a screening before auditing group outcomes.")
+        st.stop()
+
+    st.caption(
+        "The CSV includes every screening result field. Gender/Age_Group are not "
+        "inferred from resumes; replace “Not provided” only with verified labels. "
+        "Qualified is kept separate from the model's screening category and must "
+        "be independently assessed before using equal-opportunity analysis."
+    )
+    labels_upload = st.file_uploader(
+        "Upload verified labels",
+        type=["csv"],
+        key="fairness_labels_upload",
+        help="Required: Candidate_ID and Gender and/or Age_Group. Qualified is optional.",
+    )
+
+    show_fairness_demo = st.toggle(
+        "Show synthetic fairness demonstration",
+        help="Displays clearly synthetic records separate from real candidates.",
+    )
+    if show_fairness_demo:
+        demo_rows = [
+            ("DEMO-W01", "Woman", "25-34", "yes", "Shortlisted", 86),
+            ("DEMO-W02", "Woman", "25-34", "yes", "Shortlisted", 82),
+            ("DEMO-W03", "Woman", "35-44", "yes", "Shortlisted", 78),
+            ("DEMO-W04", "Woman", "45-54", "yes", "Under Review", 58),
+            ("DEMO-W05", "Woman", "35-44", "no", "Rejected", 22),
+            ("DEMO-M01", "Man", "25-34", "yes", "Shortlisted", 75),
+            ("DEMO-M02", "Man", "35-44", "yes", "Under Review", 61),
+            ("DEMO-M03", "Man", "35-44", "yes", "Rejected", 43),
+            ("DEMO-M04", "Man", "45-54", "yes", "Rejected", 34),
+            ("DEMO-M05", "Man", "55-64", "no", "Rejected", 18),
+        ]
+        demo_data = pd.DataFrame(
+            demo_rows,
+            columns=[
+                "Candidate_ID",
+                "Gender",
+                "Age_Group",
+                "Qualified",
+                "Category",
+                "Final_Score",
+            ],
+        )
+        st.warning(
+            "Synthetic demonstration only. These DEMO records are invented and "
+            "are not linked to uploaded resumes or real candidates. Do not use "
+            "these values for a hiring decision.",
+            icon=":material/science:",
+        )
+        st.download_button(
+            "Download synthetic demo CSV",
+            data=demo_data.to_csv(index=False).encode("utf-8"),
+            file_name="synthetic_fairness_demo_only.csv",
+            mime="text/csv",
+            icon=":material/download:",
+        )
+        demo_results = demo_data[["Candidate_ID", "Category"]]
+        demo_labels = demo_data[
+            ["Candidate_ID", "Gender", "Age_Group", "Qualified"]
+        ]
+        _, demo_gender_rates, demo_parity_gap, demo_opportunity_gap = (
+            calculate_fairness_rates(
+                demo_results,
+                demo_labels,
+                "Gender",
+            )
+        )
+        demo_metrics = st.columns(2)
+        demo_metrics[0].metric(
+            "Illustrative selection-rate gap",
+            f"{demo_parity_gap:.1f} pp",
+        )
+        demo_metrics[1].metric(
+            "Illustrative qualified-selection gap",
+            f"{demo_opportunity_gap:.1f} pp",
+        )
+        demo_chart = go.Figure(
+            go.Bar(
+                name="Selection rate",
+                x=demo_gender_rates.index.tolist(),
+                y=demo_gender_rates["Shortlist_Rate"].tolist(),
+                marker_color=["#6257E8", "#4D79C7"],
+                text=[
+                    f"{rate:.0f}% · n={total}"
+                    for rate, total in zip(
+                        demo_gender_rates["Shortlist_Rate"],
+                        demo_gender_rates["Total"],
+                    )
+                ],
+                textposition="outside",
+            )
+        )
+        demo_chart.update_layout(
+            height=320,
+            yaxis_title="Shortlisted (%)",
+            yaxis_range=[0, 100],
+            showlegend=False,
+        )
+
+        demo_qualified = demo_data[demo_data["Qualified"] == "yes"]
+        demo_qualified_rates = demo_qualified.groupby("Gender").agg(
+            Qualified_Total=("Candidate_ID", "count"),
+            Qualified_Shortlisted=(
+                "Category",
+                lambda values: int((values == "Shortlisted").sum()),
+            ),
+        )
+        demo_qualified_rates["Rate"] = (
+            demo_qualified_rates["Qualified_Shortlisted"]
+            / demo_qualified_rates["Qualified_Total"]
+            * 100
+        )
+        demo_opportunity_chart = go.Figure(
+            go.Bar(
+                name="Qualified selection rate",
+                x=demo_qualified_rates.index.tolist(),
+                y=demo_qualified_rates["Rate"].tolist(),
+                marker_color=["#8CBDB5", "#B98B43"],
+                text=[
+                    f"{rate:.0f}% · n={total}"
+                    for rate, total in zip(
+                        demo_qualified_rates["Rate"],
+                        demo_qualified_rates["Qualified_Total"],
+                    )
+                ],
+                textposition="outside",
+            )
+        )
+        demo_opportunity_chart.update_layout(
+            height=320,
+            yaxis_title="Qualified candidates shortlisted (%)",
+            yaxis_range=[0, 100],
+            showlegend=False,
+        )
+        selection_graph, opportunity_graph = st.columns(2)
+        with selection_graph:
+            st.caption("Selection rate across all synthetic candidates")
+            st.plotly_chart(
+                add_chart_hover(demo_chart),
+                alt="Synthetic shortlist rates across illustrative gender groups",
+            )
+        with opportunity_graph:
+            st.caption("Selection rate among synthetic qualified candidates")
+            st.plotly_chart(
+                add_chart_hover(demo_opportunity_chart),
+                alt="Synthetic qualified-candidate shortlist rates by illustrative group",
+            )
+
+    warning_gap = 10
+    critical_gap = 20
+    minimum_group_size = 5
+    st.caption(
+        "Review indicators use fixed bands: yellow at 10 percentage points, red at 20; "
+        "groups with fewer than five candidates are marked insufficient."
+    )
+    resume_categories = latest_results.get(
+        "Resume_Category",
+        pd.Series(["Unspecified"] * len(latest_results)),
+    ).fillna("Unspecified").astype(str).unique().tolist()
+    selected_resume_category = st.selectbox(
+        "Resume/job category",
+        ["All categories", *sorted(resume_categories)],
+        help="Folder-derived categories are used when present in the screening results.",
+    )
+    audit_results = latest_results
+    if selected_resume_category != "All categories":
+        audit_results = latest_results[
+            latest_results.get(
+                "Resume_Category",
+                pd.Series(["Unspecified"] * len(latest_results), index=latest_results.index),
+            ).fillna("Unspecified").astype(str)
+            == selected_resume_category
+        ]
+
+    verified_labels = None
+    if labels_upload is None:
+        st.info(
+            "Reliable demographic group labels are not available in the current resumes. "
+            "Gender- and age-based fairness metrics cannot be calculated from these records alone.",
+            title="Demographic fairness audit unavailable",
+        )
+    else:
+        try:
+            labels = pd.read_csv(labels_upload)
+            normalized = {
+                re.sub(r"[^a-z]", "", column.lower()): column
+                for column in labels.columns
+            }
+            candidate_id_column = normalized.get("candidateid")
+            group_columns = {
+                "Gender": normalized.get("gender"),
+                "Age group": normalized.get("agegroup"),
+            }
+            if not candidate_id_column:
+                st.error("The CSV needs a Candidate_ID column matching this screening.")
+            elif not any(group_columns.values()):
+                st.error("Add a Gender and/or Age_Group column to calculate group rates.")
+            elif labels[candidate_id_column].astype(str).str.strip().duplicated().any():
+                st.error("Each Candidate_ID must appear only once in the labels file.")
+            else:
+                labels = labels.rename(
+                    columns={candidate_id_column: "Candidate_ID"}
+                )
+                labels["Candidate_ID"] = labels["Candidate_ID"].astype(str).str.strip()
+                verified_labels = labels
+                matched_ids = set(labels["Candidate_ID"].astype(str).str.strip())
+                result_ids = set(audit_results["Candidate_ID"].astype(str).str.strip())
+                matched_count = len(matched_ids & result_ids)
+                st.caption(
+                    f"Verified labels matched to {matched_count} of "
+                    f"{len(audit_results)} screened candidates in this category."
+                )
+                if matched_count < len(audit_results):
+                    st.warning(
+                        "Some screened candidates have no matching demographic label; "
+                        "they are excluded from group rates."
+                    )
+
+                for dimension, group_column in group_columns.items():
+                    if not group_column:
+                        continue
+                    joined, rates, _, opportunity_gap = calculate_fairness_rates(
+                        audit_results,
+                        labels,
+                        group_column,
+                    )
+                    if rates.empty:
+                        st.info(f"No valid {dimension.lower()} group labels were provided.")
+                        continue
+
+                    sufficiently_sized = rates[
+                        rates["Total"] >= minimum_group_size
+                    ]
+                    st.subheader(f"{dimension} selection rates")
+                    st.caption(
+                        "Demographic parity compares the share shortlisted in each group. "
+                        "It does not account for qualification or explain why rates differ."
+                    )
+                    if len(sufficiently_sized) < 2:
+                        st.warning(
+                            f"Insufficient sample size: fewer than two {dimension.lower()} "
+                            f"groups have at least {minimum_group_size} labeled candidates."
+                        )
+                    else:
+                        parity_gap = (
+                            sufficiently_sized["Shortlist_Rate"].max()
+                            - sufficiently_sized["Shortlist_Rate"].min()
+                        )
+                        if parity_gap >= critical_gap:
+                            st.error(
+                                f"Potential disparity: selection-rate gap is "
+                                f"{parity_gap:.1f} percentage points. Review group context and criteria."
+                            )
+                        elif parity_gap >= warning_gap:
+                            st.warning(
+                                f"Selection-rate gap is {parity_gap:.1f} percentage points; "
+                                "consider further review."
+                            )
+                        else:
+                            st.success(
+                                f"Selection-rate gap is {parity_gap:.1f} percentage points "
+                                "for groups meeting the sample threshold."
+                            )
+
+                        selection_chart = go.Figure(
+                            go.Bar(
+                                x=sufficiently_sized.index.tolist(),
+                                y=sufficiently_sized["Shortlist_Rate"].tolist(),
+                                marker_color="#6257E8",
+                                text=[
+                                    f"{rate:.1f}% · n={total}"
+                                    for rate, total in zip(
+                                        sufficiently_sized["Shortlist_Rate"],
+                                        sufficiently_sized["Total"],
+                                    )
+                                ],
+                                textposition="outside",
+                            )
+                        )
+                        selection_chart.update_layout(
+                            height=320,
+                            yaxis_title="Shortlisted (%)",
+                            yaxis_range=[0, 100],
+                            showlegend=False,
+                        )
+                        st.plotly_chart(
+                            add_chart_hover(selection_chart),
+                            alt=f"Shortlist rate by explicitly provided {dimension.lower()} groups",
+                        )
+
+                    if opportunity_gap is None:
+                        st.info(
+                            "Equal opportunity is unavailable without verified Qualified yes/no "
+                            "labels and at least two groups with qualified candidates."
+                        )
+                    else:
+                        opportunity_rates = rates.dropna(
+                            subset=["Equal_Opportunity_Rate"]
+                        )
+                        opportunity_rates = opportunity_rates[
+                            opportunity_rates["Qualified_Total"] >= minimum_group_size
+                        ]
+                        if len(opportunity_rates) < 2:
+                            st.warning(
+                                "Insufficient qualified-candidate sample size to compare "
+                                "equal opportunity across two groups."
+                            )
+                        else:
+                            opportunity_gap = (
+                                opportunity_rates["Equal_Opportunity_Rate"].max()
+                                - opportunity_rates["Equal_Opportunity_Rate"].min()
+                            )
+                            st.markdown("**Equal opportunity**")
+                            st.caption(
+                                "Among candidates labeled Qualified, this compares the share "
+                                "shortlisted in each group."
+                            )
+                            if opportunity_gap >= critical_gap:
+                                st.error(
+                                    f"Potential qualified-selection disparity: "
+                                    f"{opportunity_gap:.1f} percentage points."
+                                )
+                            elif opportunity_gap >= warning_gap:
+                                st.warning(
+                                    f"Qualified-selection gap is {opportunity_gap:.1f} "
+                                    "percentage points; consider further review."
+                                )
+                            else:
+                                st.success(
+                                    f"Qualified-selection gap is {opportunity_gap:.1f} "
+                                    "percentage points for groups meeting the sample threshold."
+                                )
+                            opportunity_chart = go.Figure(
+                                go.Bar(
+                                    x=opportunity_rates.index.tolist(),
+                                    y=opportunity_rates[
+                                        "Equal_Opportunity_Rate"
+                                    ].tolist(),
+                                    marker_color="#4D79C7",
+                                    text=[
+                                        f"{rate:.1f}% · n={total}"
+                                        for rate, total in zip(
+                                            opportunity_rates[
+                                                "Equal_Opportunity_Rate"
+                                            ],
+                                            opportunity_rates["Qualified_Total"],
+                                        )
+                                    ],
+                                    textposition="outside",
+                                )
+                            )
+                            opportunity_chart.update_layout(
+                                height=320,
+                                yaxis_title="Qualified candidates shortlisted (%)",
+                                yaxis_range=[0, 100],
+                                showlegend=False,
+                            )
+                            st.plotly_chart(
+                                add_chart_hover(opportunity_chart),
+                                alt=(
+                                    "Shortlist rate among explicitly labeled "
+                                    "qualified candidates by group"
+                                ),
+                            )
+
+        except Exception as exc:
+            verified_labels = None
+            st.error(f"Could not read the verified-label CSV: {exc}")
+
+    audit_export = build_fairness_export(
+        latest_results,
+        verified_labels,
+    )
+    st.download_button(
+        "Download complete screening and audit CSV",
+        data=audit_export.to_csv(index=False).encode("utf-8"),
+        file_name="screening_fairness_audit.csv",
+        mime="text/csv",
+        icon=":material/download:",
+    )
+    st.stop()
+
+
+if workspace_view == "Overview":
+    current_hour = datetime.now().hour
+    greeting = "Good morning" if current_hour < 12 else (
+        "Good afternoon" if current_hour < 18 else "Good evening"
+    )
+
+    with st.container(key="overview-hero"):
+        st.caption("TALENTLENS  /  RECRUITMENT INTELLIGENCE")
+        st.title("Every resume. One clearer path to great talent.")
+        st.markdown(
+            "Turn resume batches into structured, explainable candidate "
+            "insights. Find job-related evidence sooner and keep the final "
+            "decision human-led."
+        )
+        with st.container(horizontal=True, vertical_alignment="center"):
+            st.button(
+                "Start screening",
+                type="primary",
+                icon=":material/arrow_forward:",
+                on_click=open_new_screening,
+            )
+            st.markdown("[Explore the platform ↓](#workflow)")
+        st.caption("AI-assisted screening. Human-led decisions.")
+
+    if screening_history:
+        overview_counts = {
+            "total": sum(item["total"] for item in screening_history),
+            "shortlisted": sum(item["shortlisted"] for item in screening_history),
+            "under_review": sum(item["under_review"] for item in screening_history),
+            "rejected": sum(item["rejected"] for item in screening_history),
+        }
+    elif latest_results is not None:
+        overview_counts = {
+            "total": len(latest_results),
+            "shortlisted": int((latest_results["Category"] == "Shortlisted").sum()),
+            "under_review": int((latest_results["Category"] == "Under Review").sum()),
+            "rejected": int((latest_results["Category"] == "Rejected").sum()),
+        }
+    else:
+        overview_counts = {
+            "total": 0,
+            "shortlisted": 0,
+            "under_review": 0,
+            "rejected": 0,
+        }
+
+    metric_columns = st.columns(4)
+    metric_columns[0].metric(
+        "Resumes processed",
+        overview_counts["total"],
+        border=True,
+        height="stretch",
+    )
+    metric_columns[1].metric(
+        "Shortlisted",
+        overview_counts["shortlisted"],
+        border=True,
+        height="stretch",
+    )
+    metric_columns[2].metric(
+        "Awaiting review",
+        overview_counts["under_review"],
+        border=True,
+        height="stretch",
+    )
+    metric_columns[3].metric(
+        "Rejected",
+        overview_counts["rejected"],
+        border=True,
+        height="stretch",
+    )
+
+    role_col, next_step_col = st.columns([1.2, 1])
+    with role_col:
+        st.subheader("Current role")
+        if latest_results is None:
+            st.info(
+                "Your workspace is ready. Start a screening to add a job and review its candidates.",
+                icon=":material/work_outline:",
+            )
+        else:
+            st.markdown(f"**{role_title}**")
+            st.caption(
+                f"Latest batch: {len(latest_results)} resumes parsed and ranked."
+            )
+            st.progress(1.0, text="Latest screening complete")
+
+    with next_step_col:
+        st.subheader("Next step")
+        if overview_counts["under_review"]:
+            st.markdown(
+                f"**{overview_counts['under_review']} candidates** are awaiting recruiter review."
+            )
+            st.caption("Open the screening workspace to inspect candidate evidence and reasons.")
+        elif overview_counts["total"]:
+            st.markdown("**You're all caught up on this role.**")
+            st.caption("Start another screening whenever a new role is ready.")
+        else:
+            st.markdown("**Prepare a job description and resume folder.**")
+            st.caption("The screening workspace supports pasted JDs, URLs, PDF, and DOCX.")
+
+    st.subheader("Recent screening sessions")
+    st.caption("Completed batches in this browser session")
+    if screening_history:
+        for session in screening_history[:5]:
+            session_columns = st.columns([2.4, 1, 1, 1])
+            session_columns[0].markdown(
+                f"**{session['job_title']}**  \n{session['created_at']}"
+            )
+            session_columns[1].caption(f"{session['total']} resumes")
+            session_columns[2].caption(f"{session['shortlisted']} shortlisted")
+            session_columns[3].caption(f"{session['under_review']} to review")
+    else:
+        st.caption("No completed screenings in this session yet.")
+
+    with st.container(border=True):
+        st.markdown("**Efficiency matters. Fairness does too.**")
+        st.caption(
+            "The Fairness audit can compare demographic parity using recruiter-verified "
+            "group labels, and equal opportunity when verified qualification outcomes "
+            "are provided. Without those labels, metrics remain unavailable. Any "
+            "disparity is a signal for human investigation, not proof of bias or fairness."
+        )
+
+    st.markdown('<div id="workflow"></div>', unsafe_allow_html=True)
+    st.header("From resume overload to hiring clarity")
+    workflow_columns = st.columns(3)
+    workflow_steps = [
+        (
+            "01",
+            "Define the role",
+            "Paste a job description or review text retrieved from a LinkedIn posting.",
+        ),
+        (
+            "02",
+            "Discover relevant talent",
+            "Upload a resume folder and compare skills, experience, and education against the role.",
+        ),
+        (
+            "03",
+            "Review with context",
+            "Inspect the ranking, component scores, matched skills, and decision rationale before deciding.",
+        ),
+    ]
+    for column, (step_number, title, description) in zip(
+        workflow_columns,
+        workflow_steps,
+    ):
+        with column:
+            st.caption(step_number)
+            st.subheader(title)
+            st.write(description)
+
+    st.header("Built for informed, human-led decisions")
+    trust_columns = st.columns(3)
+    trust_columns[0].markdown("**Explainable recommendations**")
+    trust_columns[0].caption(
+        "Candidate scores include skill, experience, and education components."
+    )
+    trust_columns[1].markdown("**Job-related evidence**")
+    trust_columns[1].caption(
+        "The screening compares extracted resume information with the selected role."
+    )
+    trust_columns[2].markdown("**Human oversight**")
+    trust_columns[2].caption(
+        "Results are review aids; recruiters remain responsible for hiring decisions."
+    )
+
+    st.stop()
 
 
 # --------------------------------------------------
@@ -236,11 +1081,14 @@ def get_classification_reason(candidate, classification_mode, shortlist_value):
 # 3. JOB DESCRIPTION INPUT
 # --------------------------------------------------
 
-st.header("1. Job Description")
+st.title("New screening", icon=":material/person_search:")
+st.caption("Set the role requirements, add a resume batch, and review the ranked candidates.")
+
+st.subheader("1. Choose a job", icon=":material/work_outline:")
 
 jd_method = st.radio(
     "Choose how to provide the job description",
-    ["Paste job description", "LinkedIn job URL"],
+    ["Paste job description", "Job URL"],
     horizontal=True,
 )
 
@@ -299,7 +1147,7 @@ else:
 # 4. RESUME UPLOAD
 # --------------------------------------------------
 
-st.header("2. Upload Resumes")
+st.subheader("2. Upload resumes", icon=":material/drive_folder_upload:")
 
 uploaded_resumes = st.file_uploader(
     "Select a resume folder or multiple PDF/DOCX files",
@@ -312,7 +1160,7 @@ uploaded_resumes = st.file_uploader(
 # 5. SCREENING
 # --------------------------------------------------
 
-st.header("3. Run Screening")
+st.subheader("3. Review criteria and screen", icon=":material/tune:")
 
 classification_mode = st.radio(
     "Choose how candidates are classified",
@@ -532,6 +1380,41 @@ if st.button("Screen and Rank Candidates", type="primary"):
 
                 st.session_state["screening_results"] = results_df
                 st.session_state["screening_jd"] = jd
+                st.session_state["active_job_title"] = (
+                    job_title.strip()
+                    or jd.get("metadata", {}).get("job_title", "Unspecified role")
+                )
+                batch_id = uuid4().hex
+                result_archive = st.session_state.setdefault(
+                    "screening_result_archive", {}
+                )
+                result_archive[batch_id] = results_df.to_json(orient="split")
+                screening_history = st.session_state.setdefault(
+                    "screening_history", []
+                )
+                screening_history.insert(
+                    0,
+                    {
+                        "batch_id": batch_id,
+                        "job_title": st.session_state["active_job_title"],
+                        "created_at": datetime.now().strftime(
+                            "%b %d, %Y at %I:%M %p"
+                        ),
+                        "total": len(results_df),
+                        "shortlisted": int(
+                            (results_df["Category"] == "Shortlisted").sum()
+                        ),
+                        "under_review": int(
+                            (results_df["Category"] == "Under Review").sum()
+                        ),
+                        "rejected": int(
+                            (results_df["Category"] == "Rejected").sum()
+                        ),
+                    },
+                )
+                for old_session in screening_history[20:]:
+                    result_archive.pop(old_session.get("batch_id"), None)
+                del screening_history[20:]
 
                 if errors:
                     st.warning(
@@ -554,16 +1437,54 @@ if "screening_results" in st.session_state:
         results_df = results_df.copy()
         results_df["Resume_Category"] = "Unspecified"
 
-    st.header("4. Ranked Screening Results")
+    st.header("Ranked screening results", icon=":material/format_list_numbered:")
 
-    category_filter = st.multiselect(
-        "Filter by category",
+    filter_col, sort_col = st.columns([1.5, 1])
+    with filter_col:
+        candidate_query = st.text_input(
+            "Search candidates",
+            placeholder="Resume filename or candidate ID",
+            key="candidate_search",
+        )
+    with sort_col:
+        sort_choice = st.selectbox(
+            "Sort candidates by",
+            [
+                "Final score: high to low",
+                "Final score: low to high",
+                "Skills match: high to low",
+                "Experience match: high to low",
+            ],
+        )
+
+    category_filter = st.pills(
+        "Candidate status",
         ["Shortlisted", "Under Review", "Rejected"],
+        selection_mode="multi",
         default=["Shortlisted", "Under Review", "Rejected"],
     )
     filtered_df = results_df[
         results_df["Category"].isin(category_filter)
     ]
+    if candidate_query.strip():
+        query = candidate_query.strip().casefold()
+        matches_candidate = (
+            filtered_df["Candidate_ID"].astype(str).str.casefold().str.contains(query)
+            | filtered_df["Resume"].astype(str).str.casefold().str.contains(query)
+        )
+        filtered_df = filtered_df[matches_candidate]
+
+    sort_columns = {
+        "Final score: high to low": ("Final_Score", False),
+        "Final score: low to high": ("Final_Score", True),
+        "Skills match: high to low": ("Skill_Match_%", False),
+        "Experience match: high to low": ("Experience_Match_%", False),
+    }
+    sort_column, sort_ascending = sort_columns[sort_choice]
+    filtered_df = filtered_df.sort_values(
+        sort_column,
+        ascending=sort_ascending,
+    )
     page_size = 25
     page_count = max(1, (len(filtered_df) + page_size - 1) // page_size)
     current_page = st.number_input(
@@ -595,22 +1516,35 @@ if "screening_results" in st.session_state:
         columns[5].write(f"{row['Final_Score']:.1f}")
         columns[6].write(row["Category"])
 
-    st.subheader("Candidate Details")
+    st.subheader("Candidate details", icon=":material/person:")
     selected_resume = st.selectbox(
         "Choose a resume to inspect",
         results_df["Resume"].tolist(),
     )
     candidate = results_df[results_df["Resume"] == selected_resume].iloc[0]
-    st.write(f"**Rank:** {candidate['Rank']}")
-    st.write(f"**Category:** {candidate['Category']}")
-    st.write(f"**Final score:** {candidate['Final_Score']}/100")
-    score_cols = st.columns(3)
-    score_cols[0].metric("Skills match", f"{candidate['Skill_Match_%']:.1f}%")
-    score_cols[1].metric("Experience match", f"{candidate['Experience_Match_%']:.1f}%")
-    score_cols[2].metric("Education match", f"{candidate['Education_Match_%']:.1f}%")
-    st.write(f"**Matched skills:** {candidate['Matched_Skills'] or 'None'}")
-    st.write(f"**Missing skills:** {candidate['Missing_Skills'] or 'None'}")
-    st.write(f"**Reason for decision:** {candidate.get('Reason', 'Not available')}")
+    with st.container(border=True):
+        detail_header, detail_status = st.columns([3, 1])
+        detail_header.markdown(
+            f"**{candidate['Resume']}**  ·  Rank {candidate['Rank']}"
+        )
+        detail_status.badge(
+            candidate["Category"],
+            color=(
+                "green"
+                if candidate["Category"] == "Shortlisted"
+                else "orange"
+                if candidate["Category"] == "Under Review"
+                else "red"
+            ),
+        )
+        score_cols = st.columns(4)
+        score_cols[0].metric("Final score", f"{candidate['Final_Score']:.1f}/100")
+        score_cols[1].metric("Skills match", f"{candidate['Skill_Match_%']:.1f}%")
+        score_cols[2].metric("Experience match", f"{candidate['Experience_Match_%']:.1f}%")
+        score_cols[3].metric("Education match", f"{candidate['Education_Match_%']:.1f}%")
+        st.markdown(f"**Decision rationale**  \n{candidate.get('Reason', 'Not available')}")
+        st.caption(f"Matched skills: {candidate['Matched_Skills'] or 'None'}")
+        st.caption(f"Missing skills: {candidate['Missing_Skills'] or 'None'}")
 
     st.download_button(
         "Download ranked results as CSV",
@@ -619,7 +1553,7 @@ if "screening_results" in st.session_state:
         mime="text/csv",
     )
 
-    st.header("5. Recruiter Insights Dashboard")
+    st.header("Recruiting Insights Dashboard")
 
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("Total Resumes", len(results_df))
@@ -663,7 +1597,7 @@ if "screening_results" in st.session_state:
             showlegend=False,
         )
         st.plotly_chart(
-            outcome_chart,
+            add_chart_hover(outcome_chart),
             alt="Resume counts for shortlisted, under-review, and rejected candidates",
         )
 
@@ -683,7 +1617,7 @@ if "screening_results" in st.session_state:
             bargap=0.08,
         )
         st.plotly_chart(
-            score_chart,
+            add_chart_hover(score_chart),
             alt="Distribution of final resume screening scores from zero to one hundred",
         )
 
@@ -733,7 +1667,7 @@ if "screening_results" in st.session_state:
             legend_title="Decision",
         )
         st.plotly_chart(
-            category_chart,
+            add_chart_hover(category_chart),
             alt="Candidate outcome counts grouped by resume category",
         )
 
@@ -757,7 +1691,10 @@ if "screening_results" in st.session_state:
             yaxis_range=[0, 100],
             showlegend=False,
         )
-        st.plotly_chart(rate_chart, alt="Shortlist rate by resume category")
+        st.plotly_chart(
+            add_chart_hover(rate_chart),
+            alt="Shortlist rate by resume category",
+        )
 
     st.subheader("Most matched and missing skills")
     matched_counts = count_skills_by_candidate(results_df["Matched_Skills"])
@@ -781,7 +1718,10 @@ if "screening_results" in st.session_state:
                 xaxis_title="Resumes",
                 yaxis_title="",
             )
-            st.plotly_chart(matched_chart, alt="Most commonly matched job skills")
+            st.plotly_chart(
+                add_chart_hover(matched_chart),
+                alt="Most commonly matched job skills",
+            )
         else:
             st.info("No matched skills were recorded.")
 
@@ -802,7 +1742,10 @@ if "screening_results" in st.session_state:
                 xaxis_title="Resumes",
                 yaxis_title="",
             )
-            st.plotly_chart(missing_chart, alt="Most commonly missing job skills")
+            st.plotly_chart(
+                add_chart_hover(missing_chart),
+                alt="Most commonly missing job skills",
+            )
         else:
             st.info("No missing skills were recorded.")
 
@@ -839,7 +1782,7 @@ if "screening_results" in st.session_state:
         legend_title="Match",
     )
     st.plotly_chart(
-        ranking_chart,
+        add_chart_hover(ranking_chart),
         alt="Top candidates compared by skill, experience, education, and final scores",
     )
 

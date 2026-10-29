@@ -1,0 +1,19 @@
+[theme]
+base = "light"
+primaryColor = "#6257E8"
+backgroundColor = "#F8F9FC"
+secondaryBackgroundColor = "#FFFFFF"
+textColor = "#171A2B"
+font = "Inter:https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+headingFont = "Inter:https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap"
+borderColor = "#E6E8F0"
+greenColor = "#4E8A6A"
+orangeColor = "#B98B43"
+redColor = "#B9655A"
+blueColor = "#4D79C7"
+chartCategoricalColors = ["#6257E8", "#4D79C7", "#8CBDB5", "#B98B43", "#75877C"]
+baseRadius = "small"
+buttonRadius = "small"
+showWidgetBorder = true
+paddingTop = "2rem"
+paddingBottom = "3rem"

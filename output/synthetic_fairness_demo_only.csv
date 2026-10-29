@@ -1,0 +1,11 @@
+Candidate_ID,Gender,Age_Group,Qualified,Category,Final_Score
+DEMO-W01,Woman,25-34,yes,Shortlisted,86
+DEMO-W02,Woman,25-34,yes,Shortlisted,82
+DEMO-W03,Woman,35-44,yes,Shortlisted,78
+DEMO-W04,Woman,45-54,yes,Under Review,58
+DEMO-W05,Woman,35-44,no,Rejected,22
+DEMO-M01,Man,25-34,yes,Shortlisted,75
+DEMO-M02,Man,35-44,yes,Under Review,61
+DEMO-M03,Man,35-44,yes,Rejected,43
+DEMO-M04,Man,45-54,yes,Rejected,34
+DEMO-M05,Man,55-64,no,Rejected,18
