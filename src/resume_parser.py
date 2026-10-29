@@ -16,15 +16,15 @@ from pathlib import Path
 from typing import Dict, List, Any, Optional
 
 import pandas as pd
+import pandas as pd
 
-from config import OUTPUT_DIR
-from text_cleaner import clean_text
-from skill_extractor import (
+from src.config import OUTPUT_DIR
+from src.text_cleaner import clean_text
+from src.skill_extractor import (
     extract_skills,
     extract_education,
     extract_skill_experience_years,
-)
-
+    )
 # -----------------------------------------------------------
 # LOGGING SETUP
 # -----------------------------------------------------------

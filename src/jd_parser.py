@@ -21,13 +21,15 @@ from typing import Dict, List, Any, Optional, Tuple
 import requests
 from bs4 import BeautifulSoup
 
-from config import (
+from src.config import (
     SAVED_JDS_DIR,
     DEFAULT_GATE_ORDER,
     DEFAULT_GATE_WEIGHTS
 )
-from text_cleaner import clean_text
-from skill_extractor import (
+
+from src.text_cleaner import clean_text
+
+from src.skill_extractor import (
     extract_skills,
     extract_experience_years,
     extract_education,
@@ -259,72 +261,169 @@ def parse_job_description(
 
 
 # -----------------------------------------------------------
-# 5. JD LIBRARY MANAGEMENT (SAVE, LOAD, LIST)
+
+# -----------------------------------------------------------
+# 5. JD LIBRARY MANAGEMENT (SAVE, LOAD, LIST, VERSION HISTORY)
 # -----------------------------------------------------------
 
-def save_jd(jd_data: Dict[str, Any], custom_name: Optional[str] = None) -> Path:
+def _safe_jd_filename(name: str) -> str:
+    """Convert a JD title or filename into a safe JSON filename."""
+    supplied = Path(name).name.strip()
+
+    # Remove .json before sanitizing the filename
+    if supplied.lower().endswith(".json"):
+        supplied = supplied[:-5]
+
+    safe_name = re.sub(
+        r"[^a-zA-Z0-9_-]+",
+        "_",
+        supplied.lower()
+    )
+    safe_name = safe_name.strip("_-") or "custom_job"
+
+    return safe_name + ".json"
+
+def save_jd(
+    jd_data: Dict[str, Any],
+    custom_name: Optional[str] = None
+) -> Path:
     """
-    Saves a structured JD to the saved_jds/ folder for future reuse.
+    Save a JD to the library.
+    If an existing JD changes, preserve its previous version in history.
     """
-    title = custom_name if custom_name else jd_data.get("metadata", {}).get("job_title", "custom_job")
-    safe_filename = re.sub(r'[^a-zA-Z0-9_\-]', '_', title.lower().strip()) + ".json"
-    file_path = SAVED_JDS_DIR / safe_filename
+    SAVED_JDS_DIR.mkdir(parents=True, exist_ok=True)
+
+    metadata = jd_data.setdefault("metadata", {})
+    title = custom_name or metadata.get("job_title") or "custom_job"
+    filename = _safe_jd_filename(title)
+    file_path = SAVED_JDS_DIR / filename
+
+    # Keep the original creation timestamp when updating an existing JD.
+    if file_path.exists():
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                old_data = json.load(f)
+
+            old_meta = old_data.get("metadata", {})
+            metadata.setdefault("created_at", old_meta.get("created_at"))
+
+            # Compare content without timestamps to avoid unnecessary versions.
+            old_compare = json.loads(json.dumps(old_data))
+            new_compare = json.loads(json.dumps(jd_data))
+
+            for data in (old_compare, new_compare):
+                data.get("metadata", {}).pop("created_at", None)
+                data.get("metadata", {}).pop("updated_at", None)
+
+            if old_compare != new_compare:
+                history_dir = SAVED_JDS_DIR / "history" / file_path.stem
+                history_dir.mkdir(parents=True, exist_ok=True)
+
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+                history_path = history_dir / f"{timestamp}.json"
+
+                with open(history_path, "w", encoding="utf-8") as f:
+                    json.dump(old_data, f, indent=2, ensure_ascii=False)
+
+                logger.info(f"Previous JD version archived: {history_path}")
+
+        except (OSError, json.JSONDecodeError) as e:
+            logger.warning(f"Could not read previous JD version: {e}")
+
+    else:
+        metadata.setdefault(
+            "created_at",
+            datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        )
+
+    metadata["updated_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     with open(file_path, "w", encoding="utf-8") as f:
-        json.dump(jd_data, f, indent=2)
+        json.dump(jd_data, f, indent=2, ensure_ascii=False)
 
     logger.info(f"Saved Job Description to library: {file_path}")
     return file_path
 
 
 def load_jd(filename_or_title: str) -> Optional[Dict[str, Any]]:
-    """
-    Loads a saved Job Description JSON from the saved_jds/ folder.
-    """
-    if not filename_or_title.endswith(".json"):
-        safe_filename = re.sub(r'[^a-zA-Z0-9_\-]', '_', filename_or_title.lower().strip()) + ".json"
-    else:
-        safe_filename = filename_or_title
-
-    file_path = SAVED_JDS_DIR / safe_filename
-
-    if not file_path.exists():
-        logger.error(f"Saved JD not found at: {file_path}")
+    """Load a saved JD using its filename or title."""
+    if not filename_or_title or not filename_or_title.strip():
         return None
 
-    with open(file_path, "r", encoding="utf-8") as f:
-        jd_data = json.load(f)
+    supplied_name = Path(filename_or_title).name
+    filename = _safe_jd_filename(supplied_name)
+    file_path = SAVED_JDS_DIR / filename
+    print("DEBUG filename:", filename)
+    print("DEBUG file_path:", file_path)
+    if not file_path.is_file():
+        logger.warning(f"Saved JD not found: {file_path}")
+        return None
 
-    logger.info(f"Loaded Job Description from library: {file_path}")
-    return jd_data
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            jd_data = json.load(f)
+
+        logger.info(f"Loaded Job Description: {file_path}")
+        return jd_data
+
+    except (OSError, json.JSONDecodeError) as e:
+        logger.error(f"Could not load JD {filename}: {e}")
+        return None
 
 
 def list_saved_jds() -> List[Dict[str, Any]]:
-    """
-    Lists all saved Job Descriptions stored in the saved_jds/ folder.
-    """
-    saved_files = list(SAVED_JDS_DIR.glob("*.json"))
+    """List saved JDs, excluding archived versions."""
+    SAVED_JDS_DIR.mkdir(parents=True, exist_ok=True)
     summary = []
 
-    for fpath in saved_files:
+    for fpath in sorted(SAVED_JDS_DIR.glob("*.json")):
         try:
             with open(fpath, "r", encoding="utf-8") as f:
                 data = json.load(f)
-                meta = data.get("metadata", {})
-                reqs = data.get("requirements", {})
-                summary.append({
-                    "filename": fpath.name,
-                    "title": meta.get("job_title", "Unknown Title"),
-                    "company": meta.get("company_name", "Unknown Company"),
-                    "created_at": meta.get("created_at", "N/A"),
-                    "must_skills_count": len(reqs.get("skills", {}).get("must_have", [])),
-                    "min_experience_years": reqs.get("experience", {}).get("min_years", 0)
-                })
-        except Exception as e:
+
+            meta = data.get("metadata", {})
+            reqs = data.get("requirements", {})
+            skills = reqs.get("skills", {})
+
+            summary.append({
+                "filename": fpath.name,
+                "title": meta.get("job_title", "Unknown Title"),
+                "company": meta.get("company_name", "Unknown Company"),
+                "created_at": meta.get("created_at", "N/A"),
+                "updated_at": meta.get("updated_at", "N/A"),
+                "must_skills_count": len(skills.get("must_have", [])),
+                "min_experience_years": reqs.get("experience", {}).get(
+                    "min_years", 0
+                )
+            })
+
+        except (OSError, json.JSONDecodeError, TypeError) as e:
             logger.warning(f"Could not read {fpath.name}: {e}")
 
     return summary
 
+
+def list_jd_versions(filename_or_title: str) -> List[Dict[str, Any]]:
+    """List archived versions of a saved JD, newest first."""
+    if not filename_or_title or not filename_or_title.strip():
+        return []
+
+    filename = _safe_jd_filename(Path(filename_or_title).name)
+    history_dir = SAVED_JDS_DIR / "history" / Path(filename).stem
+
+    if not history_dir.is_dir():
+        return []
+
+    versions = []
+
+    for fpath in sorted(history_dir.glob("*.json"), reverse=True):
+        versions.append({
+            "filename": fpath.name,
+            "path": str(fpath),
+            "saved_at": fpath.stem
+        })
+
+    return versions
 
 # -----------------------------------------------------------
 # ENTRY POINT / UNIT TEST

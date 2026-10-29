@@ -24,8 +24,8 @@ import numpy as np
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 os.environ["HF_HUB_DISABLE_SYMLINKS_WARNING"] = "1"
 
-from config import GATE_WEIGHT, TFIDF_WEIGHT
-from text_cleaner import clean_text
+from src.config import GATE_WEIGHT, TFIDF_WEIGHT
+from src.text_cleaner import clean_text
 
 # -----------------------------------------------------------
 # LOGGING SETUP

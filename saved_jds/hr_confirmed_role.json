@@ -1,0 +1,172 @@
+{
+  "metadata": {
+    "job_title": "HR Confirmed Role",
+    "company_name": "Company",
+    "source_url": "https://soothsayeranalytics.com/careers/junior-ai-engineer?utm_source=chatgpt.com",
+    "created_at": "2026-10-29 14:01:14",
+    "updated_at": "2026-10-29 14:01:14"
+  },
+  "gate_configuration": {
+    "gate_order": [
+      "skills",
+      "education",
+      "experience"
+    ],
+    "gate_weights": {
+      "skills": 0.5,
+      "education": 0.25,
+      "experience": 0.25
+    }
+  },
+  "requirements": {
+    "skills": {
+      "must_have": [
+        {
+          "skill": "Machine Learning",
+          "importance": 0.9,
+          "category": "Must-Have",
+          "source": "Domain Logic (Core for Data Science)"
+        },
+        {
+          "skill": "Pandas",
+          "importance": 0.9,
+          "category": "Must-Have",
+          "source": "Domain Logic (Core for Data Science)"
+        },
+        {
+          "skill": "Python",
+          "importance": 0.9,
+          "category": "Must-Have",
+          "source": "Domain Logic (Core for Data Science)"
+        },
+        {
+          "skill": "Scikit-Learn",
+          "importance": 0.9,
+          "category": "Must-Have",
+          "source": "Domain Logic (Core for Data Science)"
+        }
+      ],
+      "preferred": [
+        {
+          "skill": "Aws",
+          "importance": 0.3,
+          "category": "Nice-to-Have",
+          "source": "Explicit clue ('bonus')"
+        },
+        {
+          "skill": "Azure",
+          "importance": 0.3,
+          "category": "Nice-to-Have",
+          "source": "Explicit clue ('bonus')"
+        },
+        {
+          "skill": "Ci/Cd",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Collaboration",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Computer Vision",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Data Science",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Docker",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Gcp",
+          "importance": 0.3,
+          "category": "Nice-to-Have",
+          "source": "Explicit clue ('bonus')"
+        },
+        {
+          "skill": "Git",
+          "importance": 0.65,
+          "category": "Preferred",
+          "source": "Domain Logic (Preferred for Data Science)"
+        },
+        {
+          "skill": "Kubernetes",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Nlp",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Nosql",
+          "importance": 0.25,
+          "category": "Nice-to-Have",
+          "source": "Explicit clue ('exposure to')"
+        },
+        {
+          "skill": "Numpy",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Pytorch",
+          "importance": 0.65,
+          "category": "Preferred",
+          "source": "Domain Logic (Preferred for Data Science)"
+        },
+        {
+          "skill": "Sql",
+          "importance": 0.25,
+          "category": "Nice-to-Have",
+          "source": "Explicit clue ('exposure to')"
+        },
+        {
+          "skill": "Tensorflow",
+          "importance": 0.65,
+          "category": "Preferred",
+          "source": "Domain Logic (Preferred for Data Science)"
+        },
+        {
+          "skill": "Transformers",
+          "importance": 0.3,
+          "category": "Nice-to-Have",
+          "source": "Explicit clue ('bonus')"
+        }
+      ],
+      "total_skills_detected": 21
+    },
+    "education": {
+      "required_degrees": [
+        "Bachelor's"
+      ],
+      "importance": 0.85
+    },
+    "experience": {
+      "min_years": 0.0,
+      "skill_years": {
+        "Machine Learning": 2.0,
+        "Nlp": 2.0
+      },
+      "importance": 0.8
+    }
+  },
+  "raw_character_count": 2810,
+  "raw_text": "Data Science Consultants | Soothsayer Analytics\nApply to job\nJunior AI Engineer\nWorking Hours : Full-time\nLocations : Hyderabad\nExperience : Min 2 years\nAbout the Role:\nSoothsayer Analytics is a global AI & Data Science consultancy headquartered in Detroit, with a thriving delivery center in Hyderabad. We design and deploy end-to-end custom Machine Learning & GenAI solutions—spanning predictive analytics, optimization, NLP, computer vision, and enterprise-scale AI platforms—that help leading enterprises forecast, automate, and gain a competitive edge.\nThis is a unique opportunity to begin your AI career by working on cutting-edge GenAI, ML, and data-driven projects across industries.\nJob Overview\nWe seek a Junior AI Engineer with minimum 2 years of hands-on experience (or strong internships or projects) in machine learning, NLP, or GenAI. You will support the development and deployment of AI models, contribute to data preparation pipelines, and learn best practices in MLOps and applied AI engineering.\nKey Responsibilities\n1. Model Development & Support\nAssist in building ML models such as classification, regression, clustering, and forecasting.\nContribute to fine-tuning and prompt engineering for LLMs such as GPT and LLaMA.\nExperiment with vector databases and RAG pipelines for GenAI applications.\n2. Data Preparation & Engineering\nWork with structured and unstructured datasets for ML training.\nPerform data cleaning, feature engineering, and basic pipeline development.\n3. MLOps & Deployment (Learning Role)\nSupport containerization and deployment of models using Docker and Kubernetes.\nLearn to implement CI/CD pipelines for ML workflows.\n4. Collaboration & Learning\nWork under the guidance of senior engineers and data scientists.\nDocument experiments and present results to technical and business stakeholders.\nRequired Skills & Qualifications\nEducation: Bachelor’s in Computer Science, AI, Data Science, or related field.\nExperience: 1–2 years including internships, academic projects, or full-time roles.\nProgramming: Python (pandas, NumPy, scikit-learn, PyTorch or TensorFlow)\nML Basics: Regression, classification, clustering, time-series\nGenAI / LLMs: Prompt engineering, LangChain basics, RAG concepts\nDatabases: SQL (basic), exposure to NoSQL and vector databases (Pinecone, FAISS)\nMLOps Exposure: Docker, Git, basic CI/CD knowledge\nBonus: Knowledge of vision models, transformers, or cloud AI services (AWS SageMaker, Azure ML, GCP Vertex AI)\nSkills Matrix\nSkill\nDetails\nLast Used\nExperience (Months)\nSelf-Rating (0–10)\nPython (pandas, sklearn, PyTorch/TensorFlow)\nML Basics (Regression, Clustering, etc.)\nGenAI / LLMs (Prompting, LangChain, etc.)\nSQL / NoSQL\nVector Databases (FAISS, Pinecone, pgvector)\nMLOps Tools (Docker, Git, CI/CD)\nCloud AI Platforms (AWS / Azure / GCP)"
+}
