@@ -42,204 +42,105 @@ st.set_page_config(
 st.markdown("""
 <style>
 
-
-/* Clean, readable light theme */
-.stApp {
-    background: #f4f7fb !important;
-    color: #172033 !important;
+/* Premium navigation tabs */
+.stTabs [data-baseweb="tab-list"] {
+    gap: 10px;
+    border-bottom: 1px solid rgba(129, 140, 248, 0.25);
 }
 
-html, body, [class*="css"] {
-    color: #172033;
+.stTabs [data-baseweb="tab"] {
+    background: rgba(30, 41, 72, 0.65);
+    border: 1px solid rgba(129, 140, 248, 0.22);
+    border-radius: 10px 10px 0 0;
+    padding: 12px 20px;
+    color: #cbd5e1;
+    font-weight: 600;
+}
+
+.stTabs [aria-selected="true"] {
+    background: linear-gradient(90deg, #4338ca, #6d28d9);
+    color: #ffffff;
+}
+
+.stTabs [data-baseweb="tab-highlight"] {
+    background: #a5b4fc;
+}
+
+
+/* Premium dark AI theme */
+.stApp {
+    background: linear-gradient(135deg, #0b1020 0%, #111a33 55%, #17142b 100%);
+    color: #f1f5f9;
+}
+
+[data-testid="stSidebar"] {
+    background: #0a1020;
+    border-right: 1px solid rgba(129, 140, 248, 0.25);
 }
 
 .block-container {
-    max-width: 1500px;
-    padding-top: 1.8rem;
-    padding-bottom: 2.5rem;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
 }
 
-/* Sidebar */
-[data-testid="stSidebar"] {
-    background: #e8eef7 !important;
-    border-right: 1px solid #cbd5e1;
-}
-
-[data-testid="stSidebar"] * {
-    color: #172033 !important;
-}
-
-/* Header */
 .hero-card {
-    padding: 26px;
-    border-radius: 16px;
-    background: #ffffff;
-    border: 1px solid #d6deeb;
+    padding: 28px;
+    border-radius: 20px;
+    background: linear-gradient(120deg, #18264a, #24204a);
+    border: 1px solid rgba(129, 140, 248, 0.35);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.22);
     margin-bottom: 24px;
 }
 
 .hero-title {
-    font-size: 30px;
-    font-weight: 800;
-    color: #172554 !important;
+    font-size: 32px;
+    font-weight: 750;
+    color: #ffffff;
+    margin-bottom: 8px;
 }
 
 .hero-subtitle {
-    font-size: 14px;
-    color: #475569 !important;
-    margin-top: 6px;
+    font-size: 15px;
+    color: #c7d2fe;
 }
 
-/* Tabs: all three always visible */
-.stTabs [data-baseweb="tab-list"] {
-    display: flex !important;
-    gap: 10px !important;
-    background: #e2e8f0 !important;
-    padding: 8px !important;
-    border: 1px solid #cbd5e1 !important;
-    border-radius: 10px !important;
-}
-
-.stTabs [data-baseweb="tab"] {
-    flex: 1 1 0 !important;
-    justify-content: center !important;
-    background: #ffffff !important;
-    border: 1px solid #94a3b8 !important;
-    border-radius: 8px !important;
-    padding: 12px 8px !important;
-    opacity: 1 !important;
-}
-
-.stTabs [data-baseweb="tab"] p {
-    color: #172033 !important;
-    font-size: 15px !important;
-    font-weight: 700 !important;
-}
-
-.stTabs [data-baseweb="tab"]:hover {
-    background: #dbeafe !important;
-    border-color: #2563eb !important;
-}
-
-.stTabs [data-baseweb="tab"][aria-selected="true"] {
-    background: #1d4ed8 !important;
-    border: 2px solid #1e40af !important;
-}
-
-.stTabs [data-baseweb="tab"][aria-selected="true"] p {
-    color: #ffffff !important;
-    font-weight: 800 !important;
-}
-
-/* Inputs */
-.stApp input,
-.stApp textarea,
-.stApp [data-baseweb="input"] input,
-.stApp [data-baseweb="textarea"] textarea {
-    background: #ffffff !important;
-    color: #172033 !important;
-    -webkit-text-fill-color: #172033 !important;
-    border: 1px solid #94a3b8 !important;
-    border-radius: 8px !important;
-}
-
-.stApp input::placeholder,
-.stApp textarea::placeholder {
-    color: #64748b !important;
-    -webkit-text-fill-color: #64748b !important;
-    opacity: 1 !important;
-}
-
-/* Dropdowns */
-.stApp [data-baseweb="select"] > div {
-    background: #ffffff !important;
-    color: #172033 !important;
-    border-color: #94a3b8 !important;
-}
-
-[data-baseweb="popover"],
-[data-baseweb="menu"],
-[data-baseweb="listbox"],
-[data-baseweb="option"] {
-    background: #ffffff !important;
-    color: #172033 !important;
-}
-
-/* Text and headings */
-.stApp label,
-.stApp .stMarkdown,
-.stApp .stMarkdown p,
-.stApp .stMarkdown li,
-.stApp h1,
-.stApp h2,
-.stApp h3,
-.stApp h4 {
-    color: #172033;
-}
-
-.stApp [data-testid="stCaptionContainer"] {
-    color: #475569 !important;
-}
-
-/* Buttons */
-div.stButton > button,
-.stApp [data-testid="stDownloadButton"] button {
-    background: #1d4ed8 !important;
-    color: #ffffff !important;
-    border: 1px solid #1e40af !important;
-    border-radius: 8px !important;
-    font-weight: 700 !important;
-}
-
-/* Metrics */
-[data-testid="stMetric"] {
-    background: #ffffff !important;
-    border: 1px solid #cbd5e1 !important;
-    padding: 16px;
+div.stButton > button {
     border-radius: 10px;
+    border: 1px solid #6366f1;
+    background: linear-gradient(90deg, #4f46e5, #7c3aed);
+    color: white;
+    font-weight: 600;
+    transition: all 0.2s ease;
 }
 
-[data-testid="stMetricLabel"],
-[data-testid="stMetricLabel"] p {
-    color: #475569 !important;
+div.stButton > button:hover {
+    border-color: #a5b4fc;
+    box-shadow: 0 0 16px rgba(99, 102, 241, 0.35);
+    color: white;
 }
 
-[data-testid="stMetricValue"],
-[data-testid="stMetricValue"] div {
+[data-testid="stMetric"] {
+    background: rgba(30, 41, 72, 0.75);
+    border: 1px solid rgba(129, 140, 248, 0.25);
+    padding: 16px;
+    border-radius: 14px;
+}
+
+/* Keep form controls readable on the dark theme */
+.stApp input, .stApp textarea,
+.stApp [data-baseweb="select"] > div {
     color: #172033 !important;
-}
-
-/* Tables */
-.stApp [data-testid="stDataFrame"],
-.stApp [data-testid="stDataEditor"] {
     background: #ffffff !important;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
 }
-
-/* File uploader */
+.stApp label, .stApp .stMarkdown,
+.stApp .stMarkdown p, .stApp h1,
+.stApp h2, .stApp h3, .stApp h4 {
+    color: #f1f5f9;
+}
 .stApp [data-testid="stFileUploader"] section {
-    background: #ffffff !important;
-    border: 1px dashed #64748b !important;
-    border-radius: 10px !important;
+    background: rgba(30, 41, 72, 0.75);
+    border: 1px dashed #818cf8;
 }
-
-/* Expanders */
-.stApp [data-testid="stExpander"] {
-    background: #ffffff !important;
-    border: 1px solid #cbd5e1 !important;
-    border-radius: 8px;
-}
-
-.stApp [data-testid="stExpander"] summary {
-    color: #172033 !important;
-}
-
-.stApp hr {
-    border-color: #cbd5e1 !important;
-}
-
-
 </style>
 <div class="hero-card">
   <div class="hero-title">🤖 AI Resume Screening & Fairness Auditor</div>
