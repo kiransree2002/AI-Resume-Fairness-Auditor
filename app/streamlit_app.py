@@ -34,46 +34,268 @@ st.set_page_config(
 st.markdown(
     """
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+    :root {
+        --audit-navy: #0B1120;
+        --audit-navy-soft: #11182E;
+        --audit-blue: #0284C7;
+        --audit-indigo: #4F46E5;
+        --audit-teal: #0D9488;
+        --audit-text: #1E293B;
+        --audit-muted: #64748B;
+        --audit-border: #E2E8F0;
+        --audit-surface: #FFFFFF;
+    }
+
+    .stApp {
+        background:
+            radial-gradient(ellipse at 8% 0%, rgba(99, 102, 241, 0.075), transparent 34%),
+            radial-gradient(ellipse at 96% 12%, rgba(20, 184, 166, 0.065), transparent 30%),
+            #F8FAFC;
+        color: var(--audit-text);
+        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    .block-container {
+        max-width: 1560px;
+        padding-top: 1.8rem;
+        padding-bottom: 3.2rem;
+    }
+
+    h1, h2, h3, h4,
+    [data-testid="stMetricValue"] {
+        color: #0F172A;
+        font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
+        font-weight: 700;
+    }
+
+    h1 { letter-spacing: -0.035em; }
+    h2, h3 { letter-spacing: -0.02em; }
+
+    [data-testid="stSidebar"] {
+        background: linear-gradient(175deg, #0B1020 0%, #11182E 52%, #152238 100%);
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p,
+    [data-testid="stSidebar"] [data-testid="stRadio"] label {
+        color: #EEF2FF;
+    }
+
+    [data-testid="stSidebar"] [data-testid="stCaptionContainer"] {
+        color: #94A3B8;
+    }
+
+    [data-testid="stSidebar"] [data-testid="stRadio"] label {
+        border: 1px solid transparent;
+        border-radius: 12px;
+        padding: 0.42rem 0.65rem;
+        font-weight: 600;
+        transition: background-color 180ms ease, border-color 180ms ease, transform 180ms ease;
+    }
+
+    [data-testid="stSidebar"] [data-testid="stRadio"] label:hover {
+        background: rgba(99, 102, 241, 0.18);
+        border-color: rgba(129, 140, 248, 0.25);
+        transform: translateX(2px);
+    }
+
+    .hero-card {
+        position: relative;
+        overflow: hidden;
+        padding: 1.5rem 1.8rem;
+        margin-bottom: 1.4rem;
+        border: 1px solid rgba(255, 255, 255, 0.24);
+        border-radius: 20px;
+        color: #FFFFFF;
+        background: linear-gradient(120deg, #1E1B4B 0%, #312E81 35%, #4F46E5 72%, #0D9488 125%);
+        box-shadow: 0 16px 36px rgba(79, 70, 229, 0.18);
+        animation: workspace-enter 240ms ease-out both;
+    }
+
+    .hero-title {
+        color: #FFFFFF;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: clamp(1.35rem, 2.4vw, 1.8rem);
+        font-weight: 700;
+        letter-spacing: -0.025em;
+        margin-bottom: 0.25rem;
+    }
+
+    .hero-subtitle {
+        color: rgba(248, 250, 252, 0.88);
+        font-size: 0.9rem;
+    }
+
     .st-key-overview-hero {
-        padding: 1.7rem 1.5rem;
-        background: linear-gradient(115deg, #ffffff 0%, #f1f3fc 100%);
-        animation: workspace-enter 220ms ease-out both;
+        padding: clamp(1.7rem, 4vw, 3.2rem);
+        border: 1px solid rgba(226, 232, 240, 0.9);
+        border-radius: 24px;
+        background: linear-gradient(145deg, rgba(255,255,255,0.98), rgba(241,245,249,0.96));
+        box-shadow: 0 18px 48px rgba(15, 23, 42, 0.055);
+        animation: workspace-enter 240ms ease-out both;
     }
+
     [data-testid="stMetric"] {
-        border: 1px solid #e6e8f0;
-        border-radius: 8px;
+        position: relative;
+        border: 1px solid var(--audit-border);
+        border-radius: 16px;
         padding: 1rem 1.1rem;
-        background: #ffffff;
-        transition: border-color 180ms ease, box-shadow 180ms ease;
+        background: linear-gradient(155deg, #FFFFFF, #F8FAFC);
+        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+        transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
+                    border-color 200ms ease, box-shadow 200ms ease;
     }
+
     [data-testid="stMetric"]:hover {
-        border-color: #c4c9ef;
-        box-shadow: 0 4px 14px rgba(34, 41, 79, 0.06);
+        transform: translateY(-2px);
+        border-color: rgba(99, 102, 241, 0.35);
+        box-shadow: 0 12px 26px rgba(79, 70, 229, 0.11);
     }
+
+    [data-testid="stMetricLabel"] {
+        color: var(--audit-muted);
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
     [data-testid="stVerticalBlockBorderWrapper"] {
-        transition: border-color 180ms ease, box-shadow 180ms ease;
+        border-color: var(--audit-border);
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.97);
+        box-shadow: 0 6px 20px rgba(15, 23, 42, 0.035);
+        transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
+                    border-color 200ms ease, box-shadow 200ms ease;
     }
+
     [data-testid="stVerticalBlockBorderWrapper"]:hover {
-        border-color: #c4c9ef;
-        box-shadow: 0 5px 16px rgba(34, 41, 79, 0.07);
+        transform: translateY(-2px);
+        border-color: rgba(13, 148, 136, 0.32);
+        box-shadow: 0 12px 28px rgba(15, 23, 42, 0.07);
     }
-    [data-testid="stPlotlyChart"] {
-        transition: filter 180ms ease;
+
+    .stButton > button,
+    .stDownloadButton > button {
+        min-height: 2.65rem;
+        border: 1px solid #4F46E5;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #4F46E5 0%, #6366F1 58%, #0D9488 140%);
+        color: #FFFFFF;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-weight: 700;
+        box-shadow: 0 4px 14px rgba(79, 70, 229, 0.18);
+        transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1),
+                    box-shadow 180ms ease, filter 180ms ease;
     }
-    [data-testid="stPlotlyChart"]:hover {
-        filter: drop-shadow(0 3px 8px rgba(34, 41, 79, 0.08));
+
+    .stButton > button:hover,
+    .stDownloadButton > button:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.04);
+        box-shadow: 0 8px 22px rgba(79, 70, 229, 0.27);
     }
-    .stButton > button {
+
+    .stButton > button:focus-visible,
+    .stDownloadButton > button:focus-visible,
+    a:focus-visible {
+        outline: 3px solid rgba(13, 148, 136, 0.5);
+        outline-offset: 3px;
+    }
+
+    .stTextInput input,
+    .stTextArea textarea,
+    .stNumberInput input,
+    [data-baseweb="select"] > div {
+        border-color: #CBD5E1;
+        border-radius: 11px;
+        background: #FFFFFF;
+        transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .stTextInput input:focus,
+    .stTextArea textarea:focus,
+    .stNumberInput input:focus {
+        border-color: #6366F1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.14);
+    }
+
+    [data-testid="stFileUploaderDropzone"] {
+        border: 1.5px dashed #A5B4C7;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #FFFFFF, #F8FAFC);
+        transition: border-color 180ms ease, background-color 180ms ease;
+    }
+
+    [data-testid="stFileUploaderDropzone"]:hover {
+        border-color: #0D9488;
+        background: #F0FDFA;
+    }
+
+    [data-testid="stDataFrame"],
+    [data-testid="stDataEditor"] {
+        overflow: hidden;
+        border: 1px solid var(--audit-border);
+        border-radius: 14px;
+        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+    }
+
+    [data-testid="stExpander"] {
+        overflow: hidden;
+        border: 1px solid var(--audit-border);
+        border-radius: 14px;
+        background: #FFFFFF;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.025);
+    }
+
+    [data-testid="stExpander"] summary {
+        color: #1E293B;
+        font-weight: 700;
+    }
+
+    [data-testid="stTabs"] [data-baseweb="tab-list"] {
+        gap: 0.45rem;
+        border-bottom: 1px solid #DCE3ED;
+    }
+
+    [data-testid="stTabs"] [data-baseweb="tab"] {
+        border-radius: 10px 10px 0 0;
+        font-weight: 700;
+        transition: color 160ms ease, background-color 160ms ease;
+    }
+
+    [data-testid="stTabs"] [aria-selected="true"] {
+        color: #4338CA;
+        border-bottom-color: #4F46E5;
+    }
+
+    [data-testid="stAlert"] {
+        border-radius: 14px;
+    }
+
+    [data-testid="stProgressBar"] > div > div {
         border-radius: 8px;
-        transition: background-color 160ms ease, box-shadow 160ms ease;
+        background: linear-gradient(90deg, #4F46E5, #0D9488);
     }
-    .stButton > button:hover {
-        box-shadow: 0 3px 12px rgba(34, 41, 79, 0.10);
+
+    hr {
+        border-color: #E2E8F0;
     }
+
     @keyframes workspace-enter {
         from { opacity: 0; transform: translateY(5px); }
         to { opacity: 1; transform: translateY(0); }
     }
+
+    @media (max-width: 768px) {
+        .block-container {
+            padding: 1rem 1rem 2rem;
+        }
+        .hero-card {
+            padding: 1.2rem;
+        }
+    }
+
     @media (prefers-reduced-motion: reduce) {
         *, *::before, *::after {
             animation-duration: 0.01ms !important;
@@ -147,13 +369,104 @@ def add_chart_hover(chart):
     return chart
 
 
-def calculate_fairness_rates(results_df, demographic_df, group_column):
+def normalize_match_keys(values):
+    """Normalize human-entered identifiers for case- and whitespace-safe joins."""
+    return values.fillna("").astype(str).str.strip().str.casefold()
+
+
+def resolve_verified_labels(results_df, labels, candidate_id_column, resume_column):
+    """Resolve uploaded labels to this batch by ID first, then unique resume name."""
+    resolved_labels = labels.copy()
+    result_ids = results_df["Candidate_ID"].astype(str)
+    id_lookup = dict(zip(normalize_match_keys(result_ids), result_ids))
+
+    resume_lookup = {}
+    duplicate_result_names = set()
+    if resume_column and "Resume" in results_df.columns:
+        result_names = results_df["Resume"].map(
+            lambda value: Path(str(value)).name
+        )
+        normalized_names = normalize_match_keys(result_names)
+        duplicated_names = set(
+            normalized_names[normalized_names.duplicated(keep=False)].tolist()
+        )
+        duplicate_result_names = duplicated_names
+        resume_lookup = {
+            key: candidate_id
+            for key, candidate_id in zip(normalized_names, result_ids)
+            if key and key not in duplicated_names
+        }
+
+    resolved_ids = []
+    for row_index in range(len(resolved_labels)):
+        row = resolved_labels.iloc[row_index]
+        candidate_id = ""
+        if candidate_id_column:
+            candidate_key = normalize_match_keys(
+                pd.Series([row[candidate_id_column]])
+            ).iloc[0]
+            candidate_id = id_lookup.get(candidate_key, "")
+
+        if not candidate_id and resume_column and resume_lookup:
+            resume_name = Path(str(row[resume_column])).name
+            resume_key = normalize_match_keys(pd.Series([resume_name])).iloc[0]
+            candidate_id = resume_lookup.get(resume_key, "")
+
+        resolved_ids.append(candidate_id)
+
+    resolved_labels["Candidate_ID"] = resolved_ids
+    matched_labels = resolved_labels[resolved_labels["Candidate_ID"] != ""].copy()
+    if matched_labels["Candidate_ID"].duplicated().any():
+        return (
+            matched_labels,
+            matched_labels["Candidate_ID"].nunique(),
+            "Multiple label rows resolve to the same candidate. Keep one row per candidate.",
+        )
+
+    matched_count = matched_labels["Candidate_ID"].nunique()
+    if matched_count:
+        return matched_labels, matched_count, None
+
+    message = (
+        "No uploaded Candidate_ID or resume filename matched this screening. "
+        "Use the complete results CSV from this batch as the label template; "
+        "synthetic DEMO IDs only work in the synthetic demonstration."
+    )
+    if duplicate_result_names and not candidate_id_column:
+        message = (
+            "Resume filenames are not unique in this batch. Include Candidate_ID "
+            "from the downloaded results CSV to match labels reliably."
+        )
+    return matched_labels, 0, message
+
+
+def calculate_fairness_rates(
+    results_df,
+    demographic_df,
+    group_column,
+    match_column="Candidate_ID",
+):
     """Calculate selection-rate gaps from explicitly supplied demographic labels."""
     labels = demographic_df.copy()
-    labels["Candidate_ID"] = labels["Candidate_ID"].astype(str).str.strip()
-    joined = results_df[["Candidate_ID", "Category"]].copy()
-    joined["Candidate_ID"] = joined["Candidate_ID"].astype(str).str.strip()
-    joined = joined.merge(labels, on="Candidate_ID", how="inner")
+    if match_column not in labels.columns or match_column not in results_df.columns:
+        return pd.DataFrame(), pd.DataFrame(), None, None
+
+    labels["_audit_match_key"] = normalize_match_keys(labels[match_column])
+    result_columns = list(dict.fromkeys(["Candidate_ID", "Category", match_column]))
+    joined_source = results_df[result_columns].copy()
+    joined_source["_audit_match_key"] = normalize_match_keys(
+        joined_source[match_column]
+    )
+    labels_for_join = labels.drop(
+        columns=[column for column in ("Candidate_ID", "Resume") if column != "_audit_match_key"],
+        errors="ignore",
+    )
+    joined = joined_source.merge(
+        labels_for_join,
+        on="_audit_match_key",
+        how="inner",
+        suffixes=("", "_label"),
+    ).drop(columns="_audit_match_key")
 
     invalid_labels = {
         "", "unknown", "unspecified", "not disclosed",
@@ -329,12 +642,12 @@ if workspace_view == "Fairness audit":
         st.info("Complete a screening before auditing group outcomes.")
         st.stop()
 
-    st.caption(
-        "The CSV includes every screening result field. Gender/Age_Group are not "
-        "inferred from resumes; replace “Not provided” only with verified labels. "
-        "Qualified is kept separate from the model's screening category and must "
-        "be independently assessed before using equal-opportunity analysis."
-    )
+    # # st.caption(
+    # #     "The CSV includes every screening result field. Gender/Age_Group are not "
+    # #     "inferred from resumes; replace “Not provided” only with verified labels. "
+    # #     "Qualified is kept separate from the model's screening category and must "
+    # #     "be independently assessed before using equal-opportunity analysis."
+    # )
     labels_upload = st.file_uploader(
         "Upload verified labels",
         type=["csv"],
@@ -478,10 +791,10 @@ if workspace_view == "Fairness audit":
     warning_gap = 10
     critical_gap = 20
     minimum_group_size = 5
-    st.caption(
-        "Review indicators use fixed bands: yellow at 10 percentage points, red at 20; "
-        "groups with fewer than five candidates are marked insufficient."
-    )
+    # st.caption(
+    #     "Review indicators use fixed bands: yellow at 10 percentage points, red at 20; "
+    #     "groups with fewer than five candidates are marked insufficient."
+    # )
     resume_categories = latest_results.get(
         "Resume_Category",
         pd.Series(["Unspecified"] * len(latest_results)),
@@ -516,181 +829,182 @@ if workspace_view == "Fairness audit":
                 for column in labels.columns
             }
             candidate_id_column = normalized.get("candidateid")
+            resume_column = normalized.get("resume")
             group_columns = {
                 "Gender": normalized.get("gender"),
                 "Age group": normalized.get("agegroup"),
             }
-            if not candidate_id_column:
-                st.error("The CSV needs a Candidate_ID column matching this screening.")
+            if not candidate_id_column and not resume_column:
+                st.error("The CSV needs a Candidate_ID or Resume column to match this screening.")
             elif not any(group_columns.values()):
                 st.error("Add a Gender and/or Age_Group column to calculate group rates.")
-            elif labels[candidate_id_column].astype(str).str.strip().duplicated().any():
-                st.error("Each Candidate_ID must appear only once in the labels file.")
             else:
-                labels = labels.rename(
-                    columns={candidate_id_column: "Candidate_ID"}
+                labels, matched_count, match_error = resolve_verified_labels(
+                    audit_results,
+                    labels,
+                    candidate_id_column,
+                    resume_column,
                 )
-                labels["Candidate_ID"] = labels["Candidate_ID"].astype(str).str.strip()
-                verified_labels = labels
-                matched_ids = set(labels["Candidate_ID"].astype(str).str.strip())
-                result_ids = set(audit_results["Candidate_ID"].astype(str).str.strip())
-                matched_count = len(matched_ids & result_ids)
-                st.caption(
-                    f"Verified labels matched to {matched_count} of "
-                    f"{len(audit_results)} screened candidates in this category."
-                )
-                if matched_count < len(audit_results):
-                    st.warning(
-                        "Some screened candidates have no matching demographic label; "
-                        "they are excluded from group rates."
-                    )
-
-                for dimension, group_column in group_columns.items():
-                    if not group_column:
-                        continue
-                    joined, rates, _, opportunity_gap = calculate_fairness_rates(
-                        audit_results,
-                        labels,
-                        group_column,
-                    )
-                    if rates.empty:
-                        st.info(f"No valid {dimension.lower()} group labels were provided.")
-                        continue
-
-                    sufficiently_sized = rates[
-                        rates["Total"] >= minimum_group_size
-                    ]
-                    st.subheader(f"{dimension} selection rates")
+                if match_error:
+                    st.error(match_error)
+                else:
+                    verified_labels = labels
                     st.caption(
-                        "Demographic parity compares the share shortlisted in each group. "
-                        "It does not account for qualification or explain why rates differ."
+                        f"Verified labels matched to {matched_count} of "
+                        f"{len(audit_results)} screened candidates in this category."
                     )
-                    if len(sufficiently_sized) < 2:
+                    if matched_count < len(audit_results):
                         st.warning(
-                            f"Insufficient sample size: fewer than two {dimension.lower()} "
-                            f"groups have at least {minimum_group_size} labeled candidates."
-                        )
-                    else:
-                        parity_gap = (
-                            sufficiently_sized["Shortlist_Rate"].max()
-                            - sufficiently_sized["Shortlist_Rate"].min()
-                        )
-                        if parity_gap >= critical_gap:
-                            st.error(
-                                f"Potential disparity: selection-rate gap is "
-                                f"{parity_gap:.1f} percentage points. Review group context and criteria."
-                            )
-                        elif parity_gap >= warning_gap:
-                            st.warning(
-                                f"Selection-rate gap is {parity_gap:.1f} percentage points; "
-                                "consider further review."
-                            )
-                        else:
-                            st.success(
-                                f"Selection-rate gap is {parity_gap:.1f} percentage points "
-                                "for groups meeting the sample threshold."
-                            )
-
-                        selection_chart = go.Figure(
-                            go.Bar(
-                                x=sufficiently_sized.index.tolist(),
-                                y=sufficiently_sized["Shortlist_Rate"].tolist(),
-                                marker_color="#6257E8",
-                                text=[
-                                    f"{rate:.1f}% · n={total}"
-                                    for rate, total in zip(
-                                        sufficiently_sized["Shortlist_Rate"],
-                                        sufficiently_sized["Total"],
-                                    )
-                                ],
-                                textposition="outside",
-                            )
-                        )
-                        selection_chart.update_layout(
-                            height=320,
-                            yaxis_title="Shortlisted (%)",
-                            yaxis_range=[0, 100],
-                            showlegend=False,
-                        )
-                        st.plotly_chart(
-                            add_chart_hover(selection_chart),
-                            alt=f"Shortlist rate by explicitly provided {dimension.lower()} groups",
+                            "Some screened candidates have no matching demographic label; "
+                            "they are excluded from group rates."
                         )
 
-                    if opportunity_gap is None:
-                        st.info(
-                            "Equal opportunity is unavailable without verified Qualified yes/no "
-                            "labels and at least two groups with qualified candidates."
+                    for dimension, group_column in group_columns.items():
+                        if not group_column:
+                            continue
+                        joined, rates, _, opportunity_gap = calculate_fairness_rates(
+                            audit_results,
+                            labels,
+                            group_column,
                         )
-                    else:
-                        opportunity_rates = rates.dropna(
-                            subset=["Equal_Opportunity_Rate"]
-                        )
-                        opportunity_rates = opportunity_rates[
-                            opportunity_rates["Qualified_Total"] >= minimum_group_size
+                        if rates.empty:
+                            st.info(f"No valid {dimension.lower()} labels matched this screening.")
+                            continue
+
+                        sufficiently_sized = rates[
+                            rates["Total"] >= minimum_group_size
                         ]
-                        if len(opportunity_rates) < 2:
+                        st.subheader(f"{dimension} selection rates")
+                        st.caption(
+                            "Demographic parity compares the share shortlisted in each group. "
+                            "It does not account for qualification or explain why rates differ."
+                        )
+                        if len(sufficiently_sized) < 2:
                             st.warning(
-                                "Insufficient qualified-candidate sample size to compare "
-                                "equal opportunity across two groups."
+                                f"Insufficient sample size: fewer than two {dimension.lower()} "
+                                f"groups have at least {minimum_group_size} labeled candidates."
                             )
                         else:
-                            opportunity_gap = (
-                                opportunity_rates["Equal_Opportunity_Rate"].max()
-                                - opportunity_rates["Equal_Opportunity_Rate"].min()
+                            parity_gap = (
+                                sufficiently_sized["Shortlist_Rate"].max()
+                                - sufficiently_sized["Shortlist_Rate"].min()
                             )
-                            st.markdown("**Equal opportunity**")
-                            st.caption(
-                                "Among candidates labeled Qualified, this compares the share "
-                                "shortlisted in each group."
-                            )
-                            if opportunity_gap >= critical_gap:
+                            if parity_gap >= critical_gap:
                                 st.error(
-                                    f"Potential qualified-selection disparity: "
-                                    f"{opportunity_gap:.1f} percentage points."
+                                    f"Potential disparity: selection-rate gap is "
+                                    f"{parity_gap:.1f} percentage points. Review group context and criteria."
                                 )
-                            elif opportunity_gap >= warning_gap:
+                            elif parity_gap >= warning_gap:
                                 st.warning(
-                                    f"Qualified-selection gap is {opportunity_gap:.1f} "
-                                    "percentage points; consider further review."
+                                    f"Selection-rate gap is {parity_gap:.1f} percentage points; "
+                                    "consider further review."
                                 )
                             else:
                                 st.success(
-                                    f"Qualified-selection gap is {opportunity_gap:.1f} "
-                                    "percentage points for groups meeting the sample threshold."
+                                    f"Selection-rate gap is {parity_gap:.1f} percentage points "
+                                    "for groups meeting the sample threshold."
                                 )
-                            opportunity_chart = go.Figure(
+
+                            selection_chart = go.Figure(
                                 go.Bar(
-                                    x=opportunity_rates.index.tolist(),
-                                    y=opportunity_rates[
-                                        "Equal_Opportunity_Rate"
-                                    ].tolist(),
-                                    marker_color="#4D79C7",
+                                    x=sufficiently_sized.index.tolist(),
+                                    y=sufficiently_sized["Shortlist_Rate"].tolist(),
+                                    marker_color="#6257E8",
                                     text=[
                                         f"{rate:.1f}% · n={total}"
                                         for rate, total in zip(
-                                            opportunity_rates[
-                                                "Equal_Opportunity_Rate"
-                                            ],
-                                            opportunity_rates["Qualified_Total"],
+                                            sufficiently_sized["Shortlist_Rate"],
+                                            sufficiently_sized["Total"],
                                         )
                                     ],
                                     textposition="outside",
                                 )
                             )
-                            opportunity_chart.update_layout(
+                            selection_chart.update_layout(
                                 height=320,
-                                yaxis_title="Qualified candidates shortlisted (%)",
+                                yaxis_title="Shortlisted (%)",
                                 yaxis_range=[0, 100],
                                 showlegend=False,
                             )
                             st.plotly_chart(
-                                add_chart_hover(opportunity_chart),
-                                alt=(
-                                    "Shortlist rate among explicitly labeled "
-                                    "qualified candidates by group"
-                                ),
+                                add_chart_hover(selection_chart),
+                                alt=f"Shortlist rate by explicitly provided {dimension.lower()} groups",
                             )
+
+                        if opportunity_gap is None:
+                            st.info(
+                                "Equal opportunity is unavailable without verified Qualified yes/no "
+                                "labels and at least two groups with qualified candidates."
+                            )
+                        else:
+                            opportunity_rates = rates.dropna(
+                                subset=["Equal_Opportunity_Rate"]
+                            )
+                            opportunity_rates = opportunity_rates[
+                                opportunity_rates["Qualified_Total"] >= minimum_group_size
+                            ]
+                            if len(opportunity_rates) < 2:
+                                st.warning(
+                                    "Insufficient qualified-candidate sample size to compare "
+                                    "equal opportunity across two groups."
+                                )
+                            else:
+                                opportunity_gap = (
+                                    opportunity_rates["Equal_Opportunity_Rate"].max()
+                                    - opportunity_rates["Equal_Opportunity_Rate"].min()
+                                )
+                                st.markdown("**Equal opportunity**")
+                                st.caption(
+                                    "Among candidates labeled Qualified, this compares the share "
+                                    "shortlisted in each group."
+                                )
+                                if opportunity_gap >= critical_gap:
+                                    st.error(
+                                        f"Potential qualified-selection disparity: "
+                                        f"{opportunity_gap:.1f} percentage points."
+                                    )
+                                elif opportunity_gap >= warning_gap:
+                                    st.warning(
+                                        f"Qualified-selection gap is {opportunity_gap:.1f} "
+                                        "percentage points; consider further review."
+                                    )
+                                else:
+                                    st.success(
+                                        f"Qualified-selection gap is {opportunity_gap:.1f} "
+                                        "percentage points for groups meeting the sample threshold."
+                                    )
+                                opportunity_chart = go.Figure(
+                                    go.Bar(
+                                        x=opportunity_rates.index.tolist(),
+                                        y=opportunity_rates[
+                                            "Equal_Opportunity_Rate"
+                                        ].tolist(),
+                                        marker_color="#4D79C7",
+                                        text=[
+                                            f"{rate:.1f}% · n={total}"
+                                            for rate, total in zip(
+                                                opportunity_rates[
+                                                    "Equal_Opportunity_Rate"
+                                                ],
+                                                opportunity_rates["Qualified_Total"],
+                                            )
+                                        ],
+                                        textposition="outside",
+                                    )
+                                )
+                                opportunity_chart.update_layout(
+                                    height=320,
+                                    yaxis_title="Qualified candidates shortlisted (%)",
+                                    yaxis_range=[0, 100],
+                                    showlegend=False,
+                                )
+                                st.plotly_chart(
+                                    add_chart_hover(opportunity_chart),
+                                    alt=(
+                                        "Shortlist rate among explicitly labeled "
+                                        "qualified candidates by group"
+                                    ),
+                                )
 
         except Exception as exc:
             verified_labels = None
