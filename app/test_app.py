@@ -10,14 +10,11 @@ credentials are configured in Streamlit secrets or environment variables.
 import json
 import os
 import re
-import smtplib
 import sys
-from email.message import EmailMessage
 from pathlib import Path
 
 import pandas as pd
 import streamlit as st
-import textwrap
 from pypdf import PdfReader
 from docx import Document
 
@@ -331,121 +328,6 @@ def clean_jd_text(text):
     return "\n".join(lines).strip()
 
 
-def smtp_setting(name, default=None):
-    try:
-        value = st.secrets.get(name, default)
-        if value is not None:
-            return value
-    except Exception:
-        pass
-    return os.getenv(name, default)
-
-
-def send_email(to_address, subject, body):
-    """Send using SMTP settings from Streamlit secrets or environment variables."""
-    host = str(smtp_setting("SMTP_HOST") or "").strip()
-    port = int(smtp_setting("SMTP_PORT", 587))
-    username = str(smtp_setting("SMTP_USERNAME") or "").strip()
-    password = str(smtp_setting("SMTP_PASSWORD") or "").strip()
-    sender = str(smtp_setting("SMTP_FROM", username) or "").strip()
-
-    if not all([host, username, password, sender]):
-        raise RuntimeError(
-            "Email is not configured. Add SMTP_HOST, SMTP_PORT, SMTP_USERNAME, "
-            "SMTP_PASSWORD and SMTP_FROM to Streamlit secrets or environment variables."
-        )
-
-    msg = EmailMessage()
-    msg["From"] = sender
-    msg["To"] = to_address
-    msg["Subject"] = subject
-    msg.set_content(body)
-
-    server = None
-    try:
-        server = smtplib.SMTP(host, port, timeout=30)
-        server.ehlo()
-        server.starttls()
-        server.ehlo()
-        server.login(username, password)
-        server.send_message(msg)
-    except smtplib.SMTPAuthenticationError as err:
-        raise RuntimeError("SMTP authentication failed. Please verify your Gmail username and 16-character App Password in .streamlit/secrets.toml.")
-    except smtplib.SMTPServerDisconnected as err:
-        raise RuntimeError(
-            "Connection closed by Gmail SMTP server during login. "
-            "Note: Gmail automatically drops the connection if your 16-character App Password is incorrect, revoked, or still set to a placeholder in .streamlit/secrets.toml."
-        )
-    except smtplib.SMTPConnectError as err:
-        raise RuntimeError(f"Could not connect to SMTP server ({host}:{port}): {err.smtp_error or err}")
-    except smtplib.SMTPException as err:
-        raise RuntimeError(f"SMTP error: {err}")
-    except TimeoutError:
-        raise RuntimeError(f"Timed out connecting to SMTP server ({host}:{port}). Please check your internet connection.")
-    finally:
-        if server is not None:
-            try:
-                server.quit()
-            except Exception:
-                pass
-
-
-def get_value(row, *keys, default=""):
-    for key in keys:
-        if key in row and pd.notna(row[key]):
-            value = str(row[key]).strip()
-            if value and value.lower() != "nan":
-                return value
-    return default
-
-
-def email_templates(
-    candidate_name, position, company, hr_name, hr_designation,
-    hr_email="{hr_email}"
-):
-    signature = (
-        f"Best regards,\n"
-        f"{hr_name}\n"
-        f"{hr_designation}\n"
-        f"{company}\n"
-        f"{hr_email}"
-    )
-
-    shortlisted_subject = f"Interview Opportunity — {position}"
-    shortlisted_body = (
-        f"Dear {candidate_name},\n\n"
-        f"We are pleased to inform you that your profile has been shortlisted "
-        f"for the {position} position at {company}. We will contact you "
-        f"regarding the next steps in the recruitment process.\n\n"
-        f"{signature}"
-    )
-
-    review_subject = f"Application Update — {position}"
-    review_body = (
-        f"Dear {candidate_name},\n\n"
-        f"Thank you for your interest in the {position} position at {company}. "
-        f"Your application is currently under review. We will update you once "
-        f"a decision has been made.\n\n"
-        f"{signature}"
-    )
-
-    rejected_subject = f"Application Update — {position}"
-    rejected_body = (
-        f"Dear {candidate_name},\n\n"
-        f"Thank you for applying for the {position} position at {company}. "
-        f"Unfortunately, we will not be moving forward with your application "
-        f"for this position at this time. We appreciate your interest in our "
-        f"company and wish you success in your future career.\n\n"
-        f"{signature}"
-    )
-
-    return {
-        "SHORTLISTED": (shortlisted_subject, shortlisted_body),
-        "REVIEW": (review_subject, review_body),
-        "REJECTED": (rejected_subject, rejected_body),
-    }
-
-
 def parse_uploaded_file(uploaded_file):
     uploaded_file.seek(0)
     if uploaded_file.name.lower().endswith(".pdf"):
@@ -461,7 +343,6 @@ for key, value in {
     "jd_confirmed": False,
     "screening_df": pd.DataFrame(),
     "candidate_detail_map": {},
-    "hr_manual_decisions": {},
 }.items():
     if key not in st.session_state:
         st.session_state[key] = value
@@ -899,14 +780,13 @@ if not st.session_state.get("welcome_screen_entered", False):
         <div class="welcome-body-lead">
             Empower talent acquisition teams with transparent skill matching, explainable qualification gates, 
             and demographic audit metrics. Transition seamlessly from job parsing to ranked candidate shortlists 
-            and personalized HR communications.
+            and ranked candidate shortlists.
         </div>
 
         <div class="welcome-badges">
             <div class="welcome-badge-item"><span class="welcome-badge-dot"></span> AI Semantic Scorer</div>
             <div class="welcome-badge-item"><span class="welcome-badge-dot"></span> Explainable Gate Cascades</div>
             <div class="welcome-badge-item"><span class="welcome-badge-dot"></span> Demographic Parity Auditing</div>
-            <div class="welcome-badge-item"><span class="welcome-badge-dot"></span> One-Click HR Email Centre</div>
         </div>
 
         <!-- Refined Feature Cards -->
@@ -942,20 +822,6 @@ if not st.session_state.get("welcome_screen_entered", False):
                 </div>
             </div>
 
-            <div class="welcome-card-box">
-                <div class="welcome-card-icon icon-indigo-card">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                        <polyline points="22,6 12,13 2,6"/>
-                    </svg>
-                </div>
-                <div>
-                    <div class="welcome-card-title">HR Email Centre</div>
-                    <div class="welcome-card-desc">
-                        Categorize decisions into Shortlisted, Review, or Rejected cohorts and generate customized correspondence ready to dispatch.
-                    </div>
-                </div>
-            </div>
         </div>
 
         <div class="welcome-bottom-footer">
@@ -983,7 +849,7 @@ if not st.session_state.get("welcome_screen_entered", False):
 st.markdown("""
 <div class="hero-card">
   <div class="hero-title">🤖 AI Resume Screening & Fairness Auditor</div>
-  <div class="hero-subtitle">Intelligent Candidate Evaluation · Explainable Matching Gates · Demographic Fairness · HR Communications</div>
+  <div class="hero-subtitle">Intelligent Candidate Evaluation · Explainable Matching Gates · Demographic Fairness</div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -1008,14 +874,13 @@ with st.sidebar:
 
     PAGE_SCREENING = "Screening"
     PAGE_ANALYTICS = "Visualization & Analytics"
-    PAGE_HR = "HR Email Centre"
 
     def navigate_to(page_name):
         st.session_state["command_centre_navigation"] = page_name
 
     selected_page = st.radio(
         "Navigate",
-        [PAGE_SCREENING, PAGE_ANALYTICS, PAGE_HR],
+        [PAGE_SCREENING, PAGE_ANALYTICS],
         key="command_centre_navigation",
         label_visibility="collapsed",
     )
@@ -1277,9 +1142,12 @@ if selected_page in (PAGE_SCREENING, "Screening Workspace"):
                         statuses, shortlist_count = [], 0
                         for _, row in result_df.iterrows():
                             score = float(row["Final_Score"])
-                            if score >= shortlist_min and (top_n == 0 or shortlist_count < top_n):
-                                statuses.append("SHORTLISTED")
-                                shortlist_count += 1
+                            if score >= shortlist_min:
+                                if top_n == 0 or shortlist_count < top_n:
+                                    statuses.append("SHORTLISTED")
+                                    shortlist_count += 1
+                                else:
+                                    statuses.append("REVIEW")
                             elif review_min <= score <= review_max:
                                 statuses.append("REVIEW")
                             else:
@@ -1425,325 +1293,3 @@ elif selected_page in (PAGE_ANALYTICS, "Analytics Centre"):
                              use_container_width=True, hide_index=True)
             st.subheader("Score distribution by decision")
             st.bar_chart(df.groupby("Status")["Final_Score"].mean())
-
-        st.divider()
-        _, col_next_hr = st.columns([7, 3])
-        with col_next_hr:
-            st.button(
-                "Next: HR Email Centre →",
-                key="btn_next_to_hr",
-                type="primary",
-                use_container_width=True,
-                on_click=navigate_to,
-                args=(PAGE_HR,),
-            )
-
-
-elif selected_page in (PAGE_HR, "HR Communications"):
-    with st.container(border=True):
-        st.header("✉️ HR Email Centre")
-
-        df = st.session_state.get("screening_df", pd.DataFrame()).copy()
-
-        if df.empty:
-            st.info("Screen candidates first, then review candidates and prepare emails.")
-        else:
-            valid_statuses = ["SHORTLISTED", "REVIEW", "REJECTED"]
-            st.session_state.setdefault("hr_picker_version", 0)
-            decision_labels = {
-                "SHORTLISTED": "Shortlisted",
-                "REVIEW": "Review",
-                "REJECTED": "Rejected",
-            }
-
-            if "HR_Decision" not in df.columns:
-                df["HR_Decision"] = df["Status"].astype(str).str.upper()
-
-            df["HR_Decision"] = df.apply(
-                lambda r: (
-                    str(r.get("HR_Decision", "")).upper()
-                    if str(r.get("HR_Decision", "")).upper() in valid_statuses
-                    else str(r.get("Status", "REVIEW")).upper()
-                ),
-                axis=1,
-            )
-            st.session_state["screening_df"] = df
-
-            st.subheader("1. Review candidates by HR decision")
-
-            selected_items = []
-
-            status_tabs = st.tabs(["✅ Shortlisted", "⏳ Review", "❌ Rejected"])
-
-            for status, status_tab in zip(valid_statuses, status_tabs):
-                with status_tab:
-                    status_df = df[df["HR_Decision"] == status].copy()
-                    st.metric(f"{decision_labels[status]} candidates", len(status_df))
-
-                    if status_df.empty:
-                        st.info("No candidates in this category.")
-                        continue
-
-                    display_cols = [
-                        c for c in [
-                            "Candidate_Name", "Candidate_ID", "Email",
-                            "Final_Score", "Matched_Skills", "Missing_Skills",
-                        ] if c in status_df.columns
-                    ]
-                    st.dataframe(
-                        status_df[display_cols],
-                        use_container_width=True,
-                        hide_index=True,
-                    )
-
-                    picker_key = f"hr_picker_{status.lower()}"
-
-                    options = status_df.apply(
-                        lambda r: (
-                            f"{r.get('Candidate_Name', 'Unknown')} | "
-                            f"{r.get('Candidate_ID', '')}"
-                        ),
-                        axis=1,
-                    ).tolist()
-
-
-                    selected_options = st.multiselect(
-                        f"Select {decision_labels[status]} candidates",
-                        options=options,
-                        key=f"hr_picker_{status.lower()}_{st.session_state['hr_picker_version']}",
-                    )
-
-                    selected_items.extend(selected_options)
-            st.divider()
-
-            if st.session_state.get("hr_decision_message"):
-                st.success(st.session_state["hr_decision_message"])
-                st.session_state["hr_decision_message"] = ""
-
-            st.subheader("2. Change HR decision")
-
-            selected_ids = list(dict.fromkeys(
-                item.rsplit(" | ", 1)[-1] for item in selected_items
-            ))
-
-            st.write(f"Total selected candidates: **{len(selected_ids)}**")
-
-            new_decision = st.selectbox(
-                "Set new decision",
-                valid_statuses,
-                format_func=lambda x: decision_labels[x],
-                key="hr_new_decision",
-            )
-
-            if st.button("Apply HR Decision", use_container_width=True):
-                if not selected_ids:
-                    st.warning("Select at least one candidate first.")
-                else:
-                    df.loc[
-                        df["Candidate_ID"].astype(str).isin(selected_ids),
-                        "HR_Decision",
-                    ] = new_decision
-
-                    st.session_state["screening_df"] = df
-                    st.session_state["hr_decision_message"] = (
-                        f"Successfully updated {len(selected_ids)} candidate(s) "
-                        f"to {decision_labels[new_decision]}."
-                        )
-                    st.rerun()
-
-
-            st.divider()
-            st.subheader("3. Job and HR details")
-
-            parsed_jd = st.session_state.get("parsed_jd", {})
-            jd_text = st.session_state.get("jd_raw_text", "")
-
-            # Prefer the parsed title, then a conservative title extraction.
-            metadata = parsed_jd.get("metadata", {}) if isinstance(parsed_jd, dict) else {}
-            detected_position = (
-                metadata.get("job_title")
-                or parsed_jd.get("job_title", "")
-                or ""
-            )
-
-            if not detected_position or detected_position.lower() in {
-                "hr confirmed role", "manually entered role",
-                "the advertised position",
-            }:
-                title_match = re.search(
-                    r"(?im)^\s*(?:job title|position|role)\s*[:\-]\s*(.+?)\s*$",
-                    jd_text,
-                )
-                if title_match:
-                    detected_position = title_match.group(1).strip()
-
-            company_match = re.search(
-                r"(?im)^\s*(?:company name|company|employer)\s*[:\-]\s*(.+?)\s*$",
-                jd_text,
-            )
-            detected_company = company_match.group(1).strip() if company_match else ""
-
-            c1, c2 = st.columns(2)
-
-            with c1:
-                position = st.text_input(
-                    "Job position",
-                    value=st.session_state.get("mail_position", detected_position),
-                    key="mail_position",
-                )
-                company = st.text_input(
-                    "Company name",
-                    value=st.session_state.get("mail_company", detected_company),
-                    key="mail_company",
-                )
-
-            with c2:
-                hr_name = st.text_input("HR full name", key="mail_hr_name")
-                hr_designation = st.text_input("HR designation", key="mail_hr_designation")
-                hr_email = st.text_input("HR email address", key="mail_hr_email")
-
-            st.caption(
-                "Job title and company are auto-filled when detectable. "
-                "You can edit both fields manually.")
-            st.divider()
-            st.subheader("4. Email content")
-            template_status = st.selectbox(
-                "Choose email template",
-                valid_statuses,
-                format_func=lambda x: decision_labels[x],
-                key="mail_template_status",
-            )
-
-            # Get the latest values from Section 3
-            position_value = position.strip() or "[Job Position]"
-            company_value = company.strip() or "[Company Name]"
-            hr_name_value = hr_name.strip() or "[HR Name]"
-            hr_designation_value = (
-                hr_designation.strip() or "[HR Designation]"
-            )
-            hr_email_value = hr_email.strip() or "[HR Email]"
-
-            # Prepare the email automatically
-            defaults = email_templates(
-                "{candidate}",
-                position_value,
-                company_value,
-                hr_name_value,
-                hr_designation_value,
-                hr_email_value,
-            )
-
-            default_subject, default_body = defaults[template_status]
-
-            # Use a new editor key when any HR/job detail changes
-            editor_signature = (
-                f"{template_status}|{position_value}|{company_value}|"
-                f"{hr_name_value}|{hr_designation_value}|{hr_email_value}"
-            )
-            editor_key = str(abs(hash(editor_signature)))
-
-            edited_subject = st.text_input(
-                "Email subject",
-                value=default_subject,
-                key=f"mail_subject_{editor_key}",
-            )
-
-            edited_body = st.text_area(
-                "Email message body",
-                value=default_body,
-                key=f"mail_body_{editor_key}",
-                height=260,
-            )
-
-            template_key = f"mail_custom_{template_status.lower()}"
-            st.session_state[template_key] = {
-                "subject": edited_subject,
-                "body": edited_body,
-            }
-
-            def render_email(text, candidate_name):
-                replacements = {
-                    "{candidate}": candidate_name,
-                    "{position}": position_value,
-                    "{company}": company_value,
-                    "{hr_name}": hr_name_value,
-                    "{hr_designation}": hr_designation_value,
-                    "{hr_email}": hr_email_value,
-                }
-
-                for token, value in replacements.items():
-                    text = text.replace(token, value)
-
-                return text
-
-
-            st.divider()
-            st.subheader("5. Preview and send")
-
-            email_candidates = df[
-                df["Candidate_ID"].astype(str).isin(selected_ids)
-                & (df["HR_Decision"] == template_status)
-            ]
-
-            if not email_candidates.empty:
-                for _, row in email_candidates.iterrows():
-                    name = str(row.get("Candidate_Name", "Candidate"))
-                    with st.expander(f"Preview: {name}", expanded=False):
-                        st.write("**To:**", row.get("Email", ""))
-                        st.write("**Subject:**", render_email(edited_subject, name))
-                        st.text(render_email(edited_body, name))
-            else:
-                st.info("Select candidates whose HR decision matches the chosen template.")
-
-            confirm_send = st.checkbox(
-                "I checked the recipients and email content.",
-                key="mail_confirm_send",
-            )
-
-            if st.button(
-                "📨 Send Email to Selected Candidates",
-                type="primary",
-                use_container_width=True,
-            ):
-                required = [
-                    position.strip(), company.strip(), hr_name.strip(),
-                    hr_designation.strip(), hr_email.strip(),
-                ]
-
-                if not selected_ids:
-                    st.error("Select at least one candidate.")
-                elif email_candidates.empty:
-                    st.error("No selected candidates match this template.")
-                elif not all(required):
-                    st.error("Complete all job and HR detail fields.")
-                elif not edited_subject.strip() or not edited_body.strip():
-                    st.error("Email subject and body cannot be empty.")
-                elif not confirm_send:
-                    st.error("Confirm the recipients before sending.")
-                else:
-                    sent, failed = 0, []
-
-                    for _, row in email_candidates.iterrows():
-                        name = str(row.get("Candidate_Name", "Candidate"))
-                        address = str(row.get("Email", "")).strip()
-
-                        if not re.fullmatch(r"[^@\s]+@[^@\s]+\.[^@\s]+", address):
-                            failed.append(f"{name}: missing or invalid email")
-                            continue
-
-                        try:
-                            send_email(
-                                address,
-                                render_email(edited_subject, name),
-                                render_email(edited_body, name),
-                            )
-                            sent += 1
-                        except Exception as exc:
-                            failed.append(f"{name} ({address}): {exc}")
-
-                    if sent:
-                        st.success(f"Email sent to {sent} candidate(s).")
-                    if failed:
-                        st.error("Some emails were not sent:")
-                        for item in failed:
-                            st.write(f"- {item}")
