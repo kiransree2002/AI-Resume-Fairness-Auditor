@@ -343,26 +343,68 @@ def smtp_setting(name, default=None):
 
 def send_email(to_address, subject, body):
     """Send using SMTP settings from Streamlit secrets or environment variables."""
-    host = smtp_setting("SMTP_HOST")
+
+    host = str(smtp_setting("SMTP_HOST") or "").strip()
     port = int(smtp_setting("SMTP_PORT", 587))
-    username = smtp_setting("SMTP_USERNAME")
-    password = smtp_setting("SMTP_PASSWORD")
-    sender = smtp_setting("SMTP_FROM", username)
+    username = str(smtp_setting("SMTP_USERNAME") or "").strip()
+    password = str(smtp_setting("SMTP_PASSWORD") or "").strip()
+    sender = str(smtp_setting("SMTP_FROM", username) or "").strip()
+
     if not all([host, username, password, sender]):
         raise RuntimeError(
             "Email is not configured. Add SMTP_HOST, SMTP_PORT, SMTP_USERNAME, "
             "SMTP_PASSWORD and SMTP_FROM to Streamlit secrets or environment variables."
         )
+
     msg = EmailMessage()
     msg["From"] = sender
     msg["To"] = to_address
     msg["Subject"] = subject
     msg.set_content(body)
-    with smtplib.SMTP(host, port, timeout=20) as server:
+
+    server = None
+
+    try:
+        server = smtplib.SMTP(host, port, timeout=30)
+        server.ehlo()
         server.starttls()
+        server.ehlo()
         server.login(username, password)
         server.send_message(msg)
 
+    except smtplib.SMTPAuthenticationError:
+        raise RuntimeError(
+            "SMTP authentication failed. Please verify your Gmail username "
+            "and 16-character App Password in .streamlit/secrets.toml."
+        )
+
+    except smtplib.SMTPServerDisconnected:
+        raise RuntimeError(
+            "Connection closed by Gmail SMTP server during login. "
+            "Please verify your App Password and SMTP configuration."
+        )
+
+    except smtplib.SMTPConnectError as err:
+        raise RuntimeError(
+            f"Could not connect to SMTP server ({host}:{port}): "
+            f"{err.smtp_error or err}"
+        )
+
+    except smtplib.SMTPException as err:
+        raise RuntimeError(f"SMTP error: {err}")
+
+    except TimeoutError:
+        raise RuntimeError(
+            f"Timed out connecting to SMTP server ({host}:{port}). "
+            "Please check your internet connection."
+        )
+
+    finally:
+        if server is not None:
+            try:
+                server.quit()
+            except Exception:
+                pass
 
 def get_value(row, *keys, default=""):
     for key in keys:
