@@ -1,0 +1,144 @@
+{
+  "metadata": {
+    "job_title": "Manually Entered Role",
+    "company_name": "Company",
+    "source_url": "Direct Text / Dataset",
+    "created_at": "2026-10-28 09:24:14",
+    "updated_at": "2026-10-28 09:24:14"
+  },
+  "gate_configuration": {
+    "gate_order": [
+      "skills",
+      "education",
+      "experience"
+    ],
+    "gate_weights": {
+      "skills": 0.5,
+      "education": 0.25,
+      "experience": 0.25
+    }
+  },
+  "requirements": {
+    "skills": {
+      "must_have": [
+        {
+          "skill": "Pandas",
+          "importance": 0.9,
+          "category": "Must-Have",
+          "source": "Domain Logic (Core for Data Science)"
+        },
+        {
+          "skill": "Scikit-Learn",
+          "importance": 0.9,
+          "category": "Must-Have",
+          "source": "Domain Logic (Core for Data Science)"
+        },
+        {
+          "skill": "Sql",
+          "importance": 0.9,
+          "category": "Must-Have",
+          "source": "Domain Logic (Core for Data Science)"
+        },
+        {
+          "skill": "Statistics",
+          "importance": 0.9,
+          "category": "Must-Have",
+          "source": "Domain Logic (Core for Data Science)"
+        }
+      ],
+      "preferred": [
+        {
+          "skill": "Artificial Intelligence",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Data Analysis",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Data Science",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Git",
+          "importance": 0.65,
+          "category": "Preferred",
+          "source": "Domain Logic (Preferred for Data Science)"
+        },
+        {
+          "skill": "Github",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Large Language Models",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Llm",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Machine Learning",
+          "importance": 0.65,
+          "category": "Preferred",
+          "source": "Explicit clue ('should have')"
+        },
+        {
+          "skill": "Natural Language Processing",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Nlp",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Numpy",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        },
+        {
+          "skill": "Python",
+          "importance": 0.65,
+          "category": "Preferred",
+          "source": "Explicit clue ('should have')"
+        },
+        {
+          "skill": "Transformers",
+          "importance": 0.35,
+          "category": "Nice-to-Have",
+          "source": "Domain Logic (Supplementary for Data Science)"
+        }
+      ],
+      "total_skills_detected": 17
+    },
+    "education": {
+      "required_degrees": [
+        "Bachelor's"
+      ],
+      "importance": 0.85
+    },
+    "experience": {
+      "min_years": 2.0,
+      "importance": 0.8
+    }
+  },
+  "raw_character_count": 2152,
+  "raw_text": "# Junior AI/ML Engineer\n\n*Location:* Kochi, Kerala  \n*Experience:* Fresher / 0–1 year\n\n## Job Description\nWe are looking for a motivated Junior AI/ML Engineer to support the development of machine learning models and AI-powered applications. The candidate should have a good foundation in Python, data processing, and machine learning concepts.\n\n## Required Skills\nPython programming\nMachine Learning fundamentals\nPandas and NumPy\nScikit-learn\nData cleaning and preprocessing\nSQL\nNatural Language Processing (NLP)\nData analysis and visualization\nGit and GitHub\nProblem-solving skills\n\n## Responsibilities\nClean, preprocess, and analyze datasets.\nBuild and evaluate machine learning models.\nApply machine learning algorithms to real-world problems.\nAssist\n# Job Description: Junior AI/ML Engineer\n\n*Company:* TechNova Solutions  \n*Location:* Kochi, Kerala, India  \n*Experience:* Fresher / 0–1 year  \n*Employment Type:* Full-time\n\n## Job Summary\nWe are looking for a motivated Junior AI/ML Engineer to join our team. The candidate will help develop machine learning models, process datasets, and build AI-powered applications.\n\n## Responsibilities\n- Develop and test machine learning models using Python.\n- Clean, preprocess, and analyze datasets using Pandas and NumPy.\n- Apply machine learning algorithms using Scikit-learn.\n- Work on Natural Language Processing (NLP) and text classification tasks.\n- Explore Generative AI, Large Language Models, and Retrieval-Augmented Generation (RAG).\n- Collaborate with team members to improve model performance.\n- Document experiments, results, and project workflows.\n\n## Required Skills\n- Python programming\n- Machine Learning fundamentals\n- Pandas and NumPy\n- Scikit-learn\n- Data preprocessing and exploratory data analysis\n- Basic statistics\n- Problem-solving and analytical thinking\n- Git and GitHub\n\n## Preferred Skills\n- NLP and text processing\n- Sentence Transformers and semantic similarity\n- Streamlit application development\n- Generative AI and LLM basics\n- SQL fundamentals\n\n## Education\nBachelor's degree in Engineering, Computer Science, Information Technology, Artificial Intelligence, Data Science"
+}

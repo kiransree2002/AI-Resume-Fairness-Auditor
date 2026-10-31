@@ -16,7 +16,7 @@ Team: AI/ML (Week 1 Rebuild Deliverable)
 import logging
 from typing import Dict, List, Any, Tuple, Optional
 
-from config import (
+from src.config import (
     DEFAULT_GATE_ORDER,
     DEFAULT_GATE_WEIGHTS,
     SHORTLIST_THRESHOLD,
@@ -55,6 +55,10 @@ def evaluate_skills_gate(
     must_skills = jd_skills.get("must_have", [])
     preferred_skills = jd_skills.get("preferred", [])
 
+
+    print("DEBUG JD skills structure:", jd_skills)
+    print("DEBUG Candidate skills structure:", candidate_skills)
+
     if not must_skills and not preferred_skills:
         return "PASS", 1.0, "No skill requirements specified.", [], []
 
@@ -77,11 +81,20 @@ def evaluate_skills_gate(
             missing_must.append(item["skill"])
 
     # --- Check Preferred Skills (bonus) ---
+    # --- Check Preferred Skills (bonus) ---
     matched_pref = []
+    missing_pref = []
+
     for item in preferred_skills:
         skill_lower = item["skill"].lower()
-        if skill_lower in all_candidate or any(skill_lower in s for s in all_candidate):
+
+        if (
+            skill_lower in all_candidate
+            or any(skill_lower in s for s in all_candidate)
+        ):
             matched_pref.append(item["skill"])
+        else:
+            missing_pref.append(item["skill"])
 
     all_matched = matched_must + matched_pref
     total_must = len(must_skills)
@@ -104,7 +117,14 @@ def evaluate_skills_gate(
         score_pct = (matched_must_count / total_must) * 0.3
 
     reason = f"Matched {matched_must_count}/{total_must} must-have + {len(matched_pref)} preferred skills."
-    return status, round(score_pct, 3), reason, all_matched, missing_must
+    all_missing = missing_must + missing_pref
+
+    print("DEBUG must skills:", must_skills)
+    print("DEBUG preferred skills:", preferred_skills)
+    print("DEBUG missing must:", missing_must)
+    print("DEBUG missing preferred:", missing_pref)
+
+    return status, round(score_pct, 3), reason, all_matched, all_missing
 
 
 def evaluate_education_gate(
@@ -277,6 +297,8 @@ def run_candidate_cascade(
         weight = active_gate_weights.get(gate_name, 0.25)
         result = evaluator(jd_json, candidate_profile)
 
+        print("DEBUG SKILLS RESULT:", result)
+
         # Skills gate returns 5 values (with matched/missing lists)
         if gate_name == "skills":
             status, score_pct, reason, matched, missing = result
@@ -298,32 +320,50 @@ def run_candidate_cascade(
                 "score_pct": score_pct,
                 "weight": weight,
                 "weighted_score": round(score_pct * weight * 100, 2),
-                "reason": reason
-            }
-
+                "reason": reason}
         total_weighted_score += score_pct * weight * 100
-
-        # Early stopping: FAIL on a mandatory gate
+        # Record gate failures and respect stop_on_failure.
         if status == "FAIL":
+            if not report["rejection_reason"]:
+                report["rejection_reason"] = (
+                    f"Gate '{gate_name}' failed: {reason}"
+                )
+
             if stop_on_failure:
-                report["final_gate_score"] = round(total_weighted_score, 2)
-                report["rejection_reason"] = f"Gate '{gate_name}' failed: {reason}"
+                report["final_gate_score"] = round(
+                    total_weighted_score, 2
+                )
                 report["status"] = "REJECTED"
                 return report
-
     # Final score and status
     final_score = min(round(total_weighted_score, 2), 100.0)
     report["final_gate_score"] = final_score
+
+    skills_result = report["gate_results"].get("skills", {})
+    matched_skills = report["matched_skills"]
+    skills_score = skills_result.get("score_pct", 0.0)
 
     if final_score >= SHORTLIST_THRESHOLD:
         report["status"] = "SHORTLISTED"
     elif final_score >= MAYBE_THRESHOLD:
         report["status"] = "REVIEW"
+    elif matched_skills or skills_score > 0:
+        # Don't automatically reject a candidate who has relevant skills.
+        report["status"] = "REVIEW"
+        report["rejection_reason"] = (
+            "Relevant skills detected; manual review recommended. "
+            + (report["rejection_reason"] or "")
+        ).strip()
     else:
         report["status"] = "REJECTED"
-        report["rejection_reason"] = f"Score ({final_score}) below threshold ({SHORTLIST_THRESHOLD})."
+        if not report["rejection_reason"]:
+            report["rejection_reason"] = (
+                f"Score ({final_score}) below threshold "
+                f"({SHORTLIST_THRESHOLD}) and no relevant skills matched."
+            )
 
     return report
+
 
 
 def run_batch_cascade(
